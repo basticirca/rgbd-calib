@@ -34,6 +34,7 @@ public:
   unsigned char* frame_rgb;
   unsigned char* frame_ir;
   float* frame_d;
+  uint8_t* frame_d_8bit;
   unsigned num_slaves;
   glm::vec3 calc_pos_d(float x /* in pixels*/, float y /*in pixels*/, float d /* in meters*/);
   // retrieve 2D pixel coordinates for a given 3D position in front of the sensor in pixels
@@ -50,6 +51,7 @@ public:
 
   std::vector<unsigned char*> slave_frames_rgb;
   std::vector<float*>         slave_frames_d;
+  std::vector<uint8_t*>       slave_frames_d_8_bit;
 
 private:
 

@@ -41,21 +41,25 @@ RGBDSensor::RGBDSensor(const RGBDConfig& cfg, unsigned num_of_slaves)
     frame_rgb(0),
     frame_ir(0),
     frame_d(0),
+    frame_d_8bit(0),
     slave_frames_rgb(),
     slave_frames_d(),
+    slave_frames_d_8_bit(),
     num_slaves(num_of_slaves),
     m_ctx(1),
     m_socket(m_ctx, ZMQ_SUB)
 {
 
-  frame_rgb = new unsigned char [3 * config.size_rgb.x * config.size_rgb.y];
-  frame_ir  = new unsigned char [config.size_d.x * config.size_d.y];
-  frame_d   = new float         [config.size_d.x * config.size_d.y];
+  frame_rgb    = new unsigned char [3 * config.size_rgb.x * config.size_rgb.y];
+  frame_ir     = new unsigned char [config.size_d.x * config.size_d.y];
+  frame_d      = new float         [config.size_d.x * config.size_d.y];
+  frame_d_8bit = new uint8_t       [config.size_d.x * config.size_d.y];
   
   
   for(unsigned i = 0; i < num_slaves; ++i){
     slave_frames_rgb.push_back(new unsigned char [3 * config.size_rgb.x * config.size_rgb.y]);
-    slave_frames_d.push_back(new float         [config.size_d.x * config.size_d.y]);
+    slave_frames_d.push_back(new float [config.size_d.x * config.size_d.y]);
+    slave_frames_d_8_bit.push_back(new uint8_t [config.size_d.x * config.size_d.y]);
   }
 
 
@@ -88,6 +92,7 @@ RGBDSensor::~RGBDSensor(){
   delete [] frame_rgb;
   delete [] frame_ir;
   delete [] frame_d;
+  delete [] frame_d_8bit;
 
   cvReleaseImage(&m_cv_rgb_image);
   cvReleaseImage(&m_cv_depth_image);
@@ -122,36 +127,44 @@ void
 RGBDSensor::recv(bool recvir){
 
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
-  const unsigned bytes_ir(config.size_d.x * config.size_d.y);
   const unsigned bytes_d(config.size_d.x * config.size_d.y * sizeof(float));
-  const unsigned bytes_recv(recvir ? bytes_rgb + bytes_ir + bytes_d :
-			    bytes_rgb + bytes_d);
-  zmq::message_t zmqm(bytes_recv + num_slaves * (bytes_rgb + bytes_d));
+  const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y * sizeof(uint8_t));
+  const unsigned bytes_recv(bytes_rgb + bytes_d_8bit);
+  zmq::message_t zmqm(bytes_recv + num_slaves * (bytes_rgb + bytes_d_8bit));
   m_socket.recv(&zmqm); // blocking
   unsigned offset = 0;
   memcpy((unsigned char*) frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
   offset += bytes_rgb;
-  memcpy((unsigned char*) frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
-  offset += bytes_d;
-  if(recvir){
-    memcpy((unsigned char*) frame_ir, (unsigned char*) zmqm.data() + offset, bytes_ir);
-  }
+  memcpy((unsigned char*) frame_d_8bit, (unsigned char*) zmqm.data() + offset, bytes_d);
+  offset += bytes_d_8bit;
   for(unsigned i = 0; i < num_slaves; ++i){
     memcpy((unsigned char*) slave_frames_rgb[i], (unsigned char*) zmqm.data() + offset, bytes_rgb);
     offset += bytes_rgb;
-    memcpy((unsigned char*) slave_frames_d[i], (unsigned char*) zmqm.data() + offset, bytes_d);
-    offset += bytes_d;
+    memcpy((unsigned char*) slave_frames_d_8_bit[i], (unsigned char*) zmqm.data() + offset, bytes_d_8bit);
+    offset += bytes_d_8bit;
   }
 
-
-
-
-
-
+  // expand compressed depth
+  float min_d = 30.0f;
+  float max_d = 285.0f;
+  float range = max_d - min_d;
+  for(unsigned int i = 0; i < 512 * 424; ++i) {
+    // scale to centimeters
+    float depth_f = (float) frame_d_8bit[i];
+    depth_f = (depth_f/255)*range + min_d;
+    frame_d[i] = depth_f / 100.0f;
+    for(unsigned slave_i = 0; slave_i < num_slaves; ++slave_i){
+      depth_f = (float) slave_frames_d_8_bit[slave_i][i];
+      depth_f = (depth_f/255)*range + min_d;
+      slave_frames_d[slave_i][i] = depth_f / 100.0f;
+    }
+  }
 }
 
 void
 RGBDSensor::display_rgb_d(){
+  // skipped for now
+  /*
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
   const unsigned bytes_ir(config.size_d.x * config.size_d.y);
 
@@ -163,6 +176,7 @@ RGBDSensor::display_rgb_d(){
   memcpy(m_cv_depth_image->imageData, convertTo8Bit(frame_d, config.size_d.x, config.size_d.y), bytes_ir);
   cvShowImage( "depth", m_cv_depth_image);
   int key = cvWaitKey(10);
+  */
 
 }
 

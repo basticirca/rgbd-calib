@@ -18,6 +18,10 @@ add_executable(viewer viewer.cpp)
 target_link_libraries(viewer framework)
 install(TARGETS viewer DESTINATION bin)
 
+add_executable(viewer_8bit_depth_comp viewer_8bit_depth_comp.cpp)
+target_link_libraries(viewer_8bit_depth_comp framework)
+install(TARGETS viewer_8bit_depth_comp DESTINATION bin)
+
 add_executable(tracker tracker.cpp)
 target_link_libraries(tracker framework)
 install(TARGETS tracker DESTINATION bin)
@@ -73,6 +77,10 @@ install(TARGETS record DESTINATION bin)
 add_executable(play play.cpp)
 target_link_libraries(play framework)
 install(TARGETS play DESTINATION bin)
+
+add_executable(play_8bit_depth_comp play_8bit_depth_comp.cpp)
+target_link_libraries(play_8bit_depth_comp framework)
+install(TARGETS play_8bit_depth_comp DESTINATION bin)
 
 add_executable(play_sweep play_sweep.cpp)
 target_link_libraries(play_sweep framework)
