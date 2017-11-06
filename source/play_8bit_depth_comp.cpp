@@ -1,8 +1,6 @@
 #include <CMDParser.hpp>
 #include <FileBuffer.hpp>
 #include <calibvolume.hpp>
-#include <rgbdsensor.hpp>
-
 #include <timevalue.hpp>
 #include <clock.hpp>
 #include <zmq.hpp>
@@ -110,9 +108,9 @@ int main(int argc, char* argv[]){
       const unsigned n_fs = fb->getFileSizeBytes()/frame_size_bytes;
       std::cout << p.getArgs()[s_num] << " contains " << n_fs << " frames..."  << std::endl;
       if(perform_loop && end_loop > 0 && end_loop > n_fs){
-	end_loop = n_fs;
-	start_loop = std::min(end_loop, start_loop);
-	std::cout << "INFO: setting start loop to " << start_loop << " and end loop to " << end_loop << std::endl;
+        end_loop = n_fs;
+        start_loop = std::min(end_loop, start_loop);
+        std::cout << "INFO: setting start loop to " << start_loop << " and end loop to " << end_loop << std::endl;
       }
     }
     fb->setLooping(true);
@@ -127,10 +125,6 @@ int main(int argc, char* argv[]){
     sockets.push_back(socket);
   }
 
-  
-  bool fwd = true;
-  int loop_num = 1;
-  sensor::timevalue ts(sensor::clock::time());
   // compression helper vars
   const unsigned bytes_rgb(colorsize);
   const unsigned bytes_d(depthsize);
@@ -138,6 +132,10 @@ int main(int argc, char* argv[]){
   static unsigned char* frame_rgb = new unsigned char [1280 * 1080 * 3];
   static float* frame_d   = new float [512 * 424];
   static uint8_t* frame_d_8bit = new uint8_t [512 * 424];
+
+  bool fwd = true;
+  int loop_num = 1;
+  sensor::timevalue ts(sensor::clock::time());
   while(true){
 
     if(loop_num > num_loops && num_loops > 0){
@@ -147,69 +145,72 @@ int main(int argc, char* argv[]){
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
 
       if(perform_loop){
-      	frame_numbers[s_num] = fwd ? frame_numbers[s_num] + 1 : frame_numbers[s_num] - 1;
-      	if(frame_numbers[s_num] < start_loop){
-      	  frame_numbers[s_num] = start_loop + 1;
-      	  if(swing){
-      	    fwd = true;
-      	  }
+        frame_numbers[s_num] = fwd ? frame_numbers[s_num] + 1 : frame_numbers[s_num] - 1;
+        if(frame_numbers[s_num] < start_loop){
+          frame_numbers[s_num] = start_loop + 1;
+          if(swing){
+            fwd = true;
+          }
 
-      	  if(s_num == 0){
-      	    ++loop_num;
-      	  }
+          if(s_num == 0){
+            ++loop_num;
+          }
 
-      	}
-      	else if(frame_numbers[s_num] > end_loop){
-      	  if(swing){
-      	    fwd = false;
-      	    frame_numbers[s_num] = end_loop - 1;
-      	  }
-      	  else{
-      	    frame_numbers[s_num] = start_loop;
-      	    if(s_num == 0){
-      	      ++loop_num;
-      	    }
-      	  }
-      	}
-      	std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
-      	fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
+        }
+        else if(frame_numbers[s_num] > end_loop){
+          if(swing){
+            fwd = false;
+            frame_numbers[s_num] = end_loop - 1;
+          }
+          else{
+            frame_numbers[s_num] = start_loop;
+            if(s_num == 0){
+              ++loop_num;
+            }
+          }
+        }
+        //std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
+        fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
       }
 
       zmq::message_t zmqm(frame_size_bytes);
       fbs[s_num]->read((unsigned char*) zmqm.data(), frame_size_bytes);
-
-      // compress depth coponent
-      unsigned offset = 0;
-      memcpy((unsigned char*) frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
-      offset += bytes_rgb;
-      memcpy((unsigned char*) frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
-
-      float min_d = 30.0f;
-      float max_d = 285.0f;
-      float range = max_d - min_d;
-      for(unsigned int i = 0; i < 512 * 424; ++i) {
-        // scale to meters
-        float depth_f = frame_d[i]*100.0f;
-        if(depth_f < min_d) {
-          frame_d_8bit[i] = 0;
-        }
-        else if(depth_f > max_d) {
-          frame_d_8bit[i] = 255;
-        }
-        else {
-          // map between 0-255;
-          depth_f = floor((depth_f - min_d) / range * 256);
-          frame_d_8bit[i] = (uint8_t) depth_f;
-        }
-      }
-      
       // create new message with compressed depth component
       zmq::message_t zmqm_comp(frame_size_bytes_comp);
-      offset = 0;
-      memcpy((unsigned char*) zmqm_comp.data(), (unsigned char*) frame_rgb, bytes_rgb);
-      offset = bytes_rgb;
-      memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_d_8bit, bytes_d_8bit);
       
+      // compress depth component and fill zmqm_comp
+      unsigned offset = 0;
+      for(unsigned int kinect_idx = 0; kinect_idx < num_kinect_cameras; ++kinect_idx) {
+        offset = kinect_idx * (bytes_rgb+bytes_d);
+        memcpy((unsigned char*) frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
+        offset += bytes_rgb;
+        memcpy((unsigned char*) frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
+
+        float min_d = 30.0f;
+        float max_d = 286.0f;
+        float range = max_d - min_d;
+        for(unsigned int i = 0; i < 512 * 424; ++i) {
+          // scale to meters
+          float depth_f = frame_d[i]*100.0f;
+          if(depth_f < min_d) {
+            frame_d_8bit[i] = 0;
+          }
+          else if(depth_f > max_d) {
+            frame_d_8bit[i] = 255;
+          }
+          else {
+            // map between 0-255;
+            depth_f = floor((depth_f - min_d) / range * 256);
+            frame_d_8bit[i] = (uint8_t) depth_f;
+          }
+        }
+        
+        offset = kinect_idx * (bytes_rgb+bytes_d_8bit);
+        memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_rgb, bytes_rgb);
+        offset += bytes_rgb;
+        memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_d_8bit, bytes_d_8bit);
+      }
+
       // send frames
       sockets[s_num]->send(zmqm_comp);
     }
@@ -228,7 +229,7 @@ int main(int argc, char* argv[]){
   delete [] frame_rgb;
   delete [] frame_d;
   delete [] frame_d_8bit;
-  
+
   // cleanup
   for(unsigned s_num = 0; s_num < num_streams; ++s_num){
     delete fbs[s_num];

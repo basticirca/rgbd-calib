@@ -1,14 +1,10 @@
-#include "rgbdsensor.hpp"
-
-
-
+#include "rgbdsensor_8bit.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
-
 
 #include <cmath>
 #include <iostream>
@@ -25,9 +21,9 @@ namespace{
     }
     if(max_v != 0.0){
       for(unsigned idx = 0; idx != w*h; ++idx){
-	const float n = in[idx]/max_v;
-	unsigned char v = (unsigned char) (255.0 * n);
-	b[idx] = v;
+        const float n = in[idx]/max_v;
+        unsigned char v = (unsigned char) (255.0 * n);
+        b[idx] = v;
       }
     }
 
@@ -36,26 +32,30 @@ namespace{
 
 }
 
-RGBDSensor::RGBDSensor(const RGBDConfig& cfg, unsigned num_of_slaves)
+RGBDSensor8Bit::RGBDSensor8Bit(const RGBDConfig& cfg, unsigned num_of_slaves)
   : config(cfg),
     frame_rgb(0),
     frame_ir(0),
     frame_d(0),
+    frame_d_8bit(0),
     slave_frames_rgb(),
     slave_frames_d(),
+    slave_frames_d_8_bit(),
     num_slaves(num_of_slaves),
     m_ctx(1),
     m_socket(m_ctx, ZMQ_SUB)
 {
 
-  frame_rgb = new unsigned char [3 * config.size_rgb.x * config.size_rgb.y];
-  frame_ir  = new unsigned char [config.size_d.x * config.size_d.y];
-  frame_d   = new float         [config.size_d.x * config.size_d.y];
+  frame_rgb    = new unsigned char [3 * config.size_rgb.x * config.size_rgb.y];
+  frame_ir     = new unsigned char [config.size_d.x * config.size_d.y];
+  frame_d      = new float         [config.size_d.x * config.size_d.y];
+  frame_d_8bit = new uint8_t       [config.size_d.x * config.size_d.y];
   
   
   for(unsigned i = 0; i < num_slaves; ++i){
     slave_frames_rgb.push_back(new unsigned char [3 * config.size_rgb.x * config.size_rgb.y]);
-    slave_frames_d.push_back(new float         [config.size_d.x * config.size_d.y]);
+    slave_frames_d.push_back(new float [config.size_d.x * config.size_d.y]);
+    slave_frames_d_8_bit.push_back(new uint8_t [config.size_d.x * config.size_d.y]);
   }
 
 
@@ -84,10 +84,11 @@ RGBDSensor::RGBDSensor(const RGBDConfig& cfg, unsigned num_of_slaves)
 
 
 
-RGBDSensor::~RGBDSensor(){
+RGBDSensor8Bit::~RGBDSensor8Bit(){
   delete [] frame_rgb;
   delete [] frame_ir;
   delete [] frame_d;
+  delete [] frame_d_8bit;
 
   cvReleaseImage(&m_cv_rgb_image);
   cvReleaseImage(&m_cv_depth_image);
@@ -96,7 +97,7 @@ RGBDSensor::~RGBDSensor(){
 
 
 glm::vec3
-RGBDSensor::calc_pos_d(float x, float y, float d){
+RGBDSensor8Bit::calc_pos_d(float x, float y, float d){
   const float x_d  = ((x - config.principal_d.x)/config.focal_d.x) * d;
   const float y_d  = ((y - config.principal_d.y)/config.focal_d.y) * d;
   return glm::vec3(x_d, y_d, d);
@@ -104,10 +105,10 @@ RGBDSensor::calc_pos_d(float x, float y, float d){
 
 
 glm::vec2
-RGBDSensor::calc_pos_rgb(const glm::vec3& pos_d){
+RGBDSensor8Bit::calc_pos_rgb(const glm::vec3& pos_d){
 
   glm::vec4 pos_d_H(pos_d.x, pos_d.y, pos_d.z, 1.0f);
-  glm::vec4 pos_rgb_H = config.eye_d_to_eye_rgb * pos_d_H;		
+  glm::vec4 pos_rgb_H = config.eye_d_to_eye_rgb * pos_d_H;    
   float xcf = (pos_rgb_H[0]/pos_rgb_H[2]) * config.focal_rgb.x + config.principal_rgb.x;
   float ycf = (pos_rgb_H[1]/pos_rgb_H[2]) * config.focal_rgb.y + config.principal_rgb.y;
 #if 1
@@ -119,49 +120,75 @@ RGBDSensor::calc_pos_rgb(const glm::vec3& pos_d){
 }
 
 void
-RGBDSensor::recv(bool recvir){
+RGBDSensor8Bit::recv(bool recvir){
 
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
-  const unsigned bytes_ir(config.size_d.x * config.size_d.y);
   const unsigned bytes_d(config.size_d.x * config.size_d.y * sizeof(float));
-  const unsigned bytes_recv(recvir ? bytes_rgb + bytes_ir + bytes_d :
-			    bytes_rgb + bytes_d);
-  zmq::message_t zmqm(bytes_recv + num_slaves * (bytes_rgb + bytes_d));
+  const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y * sizeof(uint8_t));
+  const unsigned bytes_recv(bytes_rgb + bytes_d_8bit);
+  zmq::message_t zmqm(bytes_recv + num_slaves * (bytes_rgb + bytes_d_8bit));
   m_socket.recv(&zmqm); // blocking
   unsigned offset = 0;
   memcpy((unsigned char*) frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
   offset += bytes_rgb;
-  memcpy((unsigned char*) frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
-  offset += bytes_d;
-  if(recvir){
-    memcpy((unsigned char*) frame_ir, (unsigned char*) zmqm.data() + offset, bytes_ir);
-  }
+  memcpy((unsigned char*) frame_d_8bit, (unsigned char*) zmqm.data() + offset, bytes_d_8bit);
+  offset += bytes_d_8bit;
   for(unsigned i = 0; i < num_slaves; ++i){
     memcpy((unsigned char*) slave_frames_rgb[i], (unsigned char*) zmqm.data() + offset, bytes_rgb);
     offset += bytes_rgb;
-    memcpy((unsigned char*) slave_frames_d[i], (unsigned char*) zmqm.data() + offset, bytes_d);
-    offset += bytes_d;
+    memcpy((unsigned char*) slave_frames_d_8_bit[i], (unsigned char*) zmqm.data() + offset, bytes_d_8bit);
+    offset += bytes_d_8bit;
+  }
+
+  // expand compressed depth
+  float min_d = 30.0f;
+  float max_d = 286.0f;
+  float range = max_d - min_d;
+  float invalid_depth = 10.0f;
+  float depth_f;
+  for(unsigned int i = 0; i < 512 * 424; ++i) {
+    if(frame_d_8bit[i] == 0 || frame_d_8bit[i] == 255) {
+      frame_d[i] = invalid_depth;
+      continue;
+    }
+    else {
+      // scale to centimeters
+      depth_f = (float) frame_d_8bit[i];
+      depth_f = (depth_f/255)*range + min_d;
+      frame_d[i] = depth_f / 100.0f;
+    }
+    for(unsigned slave_i = 0; slave_i < num_slaves; ++slave_i){
+      if(slave_frames_d_8_bit[slave_i][i] == 0 || slave_frames_d_8_bit[slave_i][i] == 255) {
+        slave_frames_d[slave_i][i] = invalid_depth;
+        continue;
+      }
+      depth_f = (float) slave_frames_d_8_bit[slave_i][i];
+      depth_f = (depth_f/255)*range + min_d;
+      slave_frames_d[slave_i][i] = depth_f / 100.0f;
+    }
   }
 }
 
 void
-RGBDSensor::display_rgb_d(){
+RGBDSensor8Bit::display_rgb_d(){
+  // skipped for now
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
-  const unsigned bytes_ir(config.size_d.x * config.size_d.y);
+  const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y);
+
+  unsigned s_num_debug = 1;
 
   IplImage* tmp_image = cvCreateImage(cvSize(config.size_rgb.x, config.size_rgb.y), 8, 3);
-  memcpy(m_cv_rgb_image->imageData, frame_rgb, bytes_rgb);
+  memcpy(m_cv_rgb_image->imageData, slave_frames_rgb[s_num_debug], bytes_rgb);
   cvCvtColor( m_cv_rgb_image, tmp_image, CV_BGR2RGB );
   cvShowImage( "rgb", tmp_image);
   cvReleaseImage(&tmp_image);
-  memcpy(m_cv_depth_image->imageData, convertTo8Bit(frame_d, config.size_d.x, config.size_d.y), bytes_ir);
+  memcpy(m_cv_depth_image->imageData, slave_frames_d_8_bit[s_num_debug], bytes_d_8bit);
   cvShowImage( "depth", m_cv_depth_image);
   int key = cvWaitKey(10);
-
 }
 
 glm::vec3
-RGBDSensor::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned stream_num){
+RGBDSensor8Bit::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned stream_num){
 
   glm::vec3 rgb;
 
@@ -227,7 +254,7 @@ RGBDSensor::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned strea
 
 
 glm::mat4
-RGBDSensor::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checkerboard& cb){
+RGBDSensor8Bit::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checkerboard& cb){
 
 
   // find slowest ChessboardPose
@@ -314,10 +341,10 @@ RGBDSensor::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checkerboa
 
 
 glm::mat4
-RGBDSensor::guess_eye_d_to_world_static(const ChessboardSampling& cbs, const Checkerboard& cb){
+RGBDSensor8Bit::guess_eye_d_to_world_static(const ChessboardSampling& cbs, const Checkerboard& cb){
 
   if(cbs.getIRs().empty() || cbs.getPoses().empty()){
-    std::cerr << "ERROR in RGBDSensor::guess_eye_d_to_world_static: no Chessboard found" << std::endl;
+    std::cerr << "ERROR in RGBDSensor8Bit::guess_eye_d_to_world_static: no Chessboard found" << std::endl;
     exit(0);
   }
 

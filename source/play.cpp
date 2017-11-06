@@ -105,9 +105,9 @@ int main(int argc, char* argv[]){
       const unsigned n_fs = fb->getFileSizeBytes()/frame_size_bytes;
       std::cout << p.getArgs()[s_num] << " contains " << n_fs << " frames..."  << std::endl;
       if(perform_loop && end_loop > 0 && end_loop > n_fs){
-	end_loop = n_fs;
-	start_loop = std::min(end_loop, start_loop);
-	std::cout << "INFO: setting start loop to " << start_loop << " and end loop to " << end_loop << std::endl;
+        end_loop = n_fs;
+        start_loop = std::min(end_loop, start_loop);
+        std::cout << "INFO: setting start loop to " << start_loop << " and end loop to " << end_loop << std::endl;
       }
     }
     fb->setLooping(true);
@@ -135,32 +135,32 @@ int main(int argc, char* argv[]){
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
 
       if(perform_loop){
-	frame_numbers[s_num] = fwd ? frame_numbers[s_num] + 1 : frame_numbers[s_num] - 1;
-	if(frame_numbers[s_num] < start_loop){
-	  frame_numbers[s_num] = start_loop + 1;
-	  if(swing){
-	    fwd = true;
-	  }
+        frame_numbers[s_num] = fwd ? frame_numbers[s_num] + 1 : frame_numbers[s_num] - 1;
+        if(frame_numbers[s_num] < start_loop){
+          frame_numbers[s_num] = start_loop + 1;
+          if(swing){
+            fwd = true;
+          }
 
-	  if(s_num == 0){
-	    ++loop_num;
-	  }
+          if(s_num == 0){
+            ++loop_num;
+          }
 
-	}
-	else if(frame_numbers[s_num] > end_loop){
-	  if(swing){
-	    fwd = false;
-	    frame_numbers[s_num] = end_loop - 1;
-	  }
-	  else{
-	    frame_numbers[s_num] = start_loop;
-	    if(s_num == 0){
-	      ++loop_num;
-	    }
-	  }
-	}
-	std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
-	fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
+        }
+        else if(frame_numbers[s_num] > end_loop){
+          if(swing){
+            fwd = false;
+            frame_numbers[s_num] = end_loop - 1;
+          }
+          else{
+            frame_numbers[s_num] = start_loop;
+            if(s_num == 0){
+              ++loop_num;
+            }
+          }
+        }
+        std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
+        fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
       }
 
       zmq::message_t zmqm(frame_size_bytes);

@@ -1,6 +1,6 @@
 #include <window.hpp>
 #include <calibvolume.hpp>
-#include <rgbdsensor.hpp>
+#include <rgbdsensor_8bit.hpp>
 #include <CMDParser.hpp>
 
 #include <iostream>
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
   cfg.size_rgb = glm::uvec2(1280, 1080);
   cfg.size_d   = glm::uvec2(512, 424);
 
-  RGBDSensor sensor(cfg, num_streams - 1);
+  RGBDSensor8Bit sensor(cfg, num_streams - 1);
 
 
   Window win(glm::ivec2(800,800), true /*3D mode*/);
