@@ -2,6 +2,8 @@
 #include <calibvolume.hpp>
 #include <rgbdsensor.hpp>
 #include <CMDParser.hpp>
+#include <timevalue.hpp>
+#include <clock.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -9,8 +11,13 @@
 int main(int argc, char* argv[]){
 
   CMDParser p("basefilename_cv .... serverport");
+  p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
   p.init(argc,argv);
 
+  bool verbose = false;
+  if(p.isOptSet("v")){
+    verbose = true;
+  }
 
   const unsigned num_streams(p.getArgs().size() - 1);
   std::vector<CalibVolume*> cvs;
@@ -42,7 +49,12 @@ int main(int argc, char* argv[]){
 
 
     // receive frames
+    sensor::timevalue start_t(sensor::clock::time());
     sensor.recv(false /*do not recv ir!*/);
+    sensor::timevalue end_t(sensor::clock::time());
+    if(verbose) {
+      std::cout << "Receiving took " << (end_t - start_t).msec() << "ms.\n";
+    }
     sensor.display_rgb_d();
 
     glPointSize(1.0);
@@ -51,27 +63,27 @@ int main(int argc, char* argv[]){
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
       // do 3D recosntruction for each depth pixel
       for(unsigned y = 0; y < sensor.config.size_d.y; ++y){
-	for(unsigned x = 0; x < (sensor.config.size_d.x - 3); ++x){
-	  const unsigned d_idx = y* sensor.config.size_d.x + x;
-	  float d = s_num == 0 ? sensor.frame_d[d_idx] : sensor.slave_frames_d[s_num - 1][d_idx];
-	  if(d < cvs[s_num]->min_d || d > cvs[s_num]->max_d)
-	    continue;
-	  
-	  glm::vec3 pos3D;
-	  glm::vec2 pos2D_rgb;
-	  
-	  pos3D = cvs[s_num]->lookupPos3D( x * 1.0/sensor.config.size_d.x,
-					   y * 1.0/sensor.config.size_d.y, d);
-	  glm::vec2 pos2D_rgb_norm = cvs[s_num]->lookupPos2D_normalized( x * 1.0/sensor.config.size_d.x, 
-									 y * 1.0/sensor.config.size_d.y, d);
-	  pos2D_rgb = glm::vec2(pos2D_rgb_norm.x * sensor.config.size_rgb.x,
-				pos2D_rgb_norm.y * sensor.config.size_rgb.y);
-	  
-	  glm::vec3 rgb = sensor.get_rgb_bilinear_normalized(pos2D_rgb, s_num);
-	  glColor3f(rgb.x, rgb.y, rgb.z);
-	  glVertex3f(pos3D.x, pos3D.y, pos3D.z);
+        for(unsigned x = 0; x < (sensor.config.size_d.x - 3); ++x){
+          const unsigned d_idx = y* sensor.config.size_d.x + x;
+          float d = s_num == 0 ? sensor.frame_d[d_idx] : sensor.slave_frames_d[s_num - 1][d_idx];
+          if(d < cvs[s_num]->min_d || d > cvs[s_num]->max_d)
+            continue;
+          
+          glm::vec3 pos3D;
+          glm::vec2 pos2D_rgb;
+          
+          pos3D = cvs[s_num]->lookupPos3D( x * 1.0/sensor.config.size_d.x,
+                   y * 1.0/sensor.config.size_d.y, d);
+          glm::vec2 pos2D_rgb_norm = cvs[s_num]->lookupPos2D_normalized( x * 1.0/sensor.config.size_d.x, 
+                         y * 1.0/sensor.config.size_d.y, d);
+          pos2D_rgb = glm::vec2(pos2D_rgb_norm.x * sensor.config.size_rgb.x,
+              pos2D_rgb_norm.y * sensor.config.size_rgb.y);
+          
+          glm::vec3 rgb = sensor.get_rgb_bilinear_normalized(pos2D_rgb, s_num);
+          glColor3f(rgb.x, rgb.y, rgb.z);
+          glVertex3f(pos3D.x, pos3D.y, pos3D.z);
 
-	}
+        }
       }
     }
     glEnd();

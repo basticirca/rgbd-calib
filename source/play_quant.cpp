@@ -32,6 +32,9 @@ int main(int argc, char* argv[]){
   float max_fps = 20.0;
   std::string socket_ip = "127.0.0.01";
   unsigned base_socket_port = 7000;
+  float min_d = 30.0f;
+  float max_d = 286.0f;
+  bool verbose = false;
   CMDParser p("play_this_filename ...");
   p.addOpt("k",1,"num_kinect_cameras", "specify how many kinect cameras are in stream, default: 1");
   p.addOpt("f",1,"max_fps", "specify how fast in fps the stream should be played, default: 20.0");
@@ -42,6 +45,8 @@ int main(int argc, char* argv[]){
   p.addOpt("l",2,"loop", "specify a start and end frame for looping, default: " + toString(start_loop) + " " + toString(end_loop));
   p.addOpt("w",-1,"swing", "enable swing looping mode, default: false");
   p.addOpt("n",1,"num_loops", "loop n time, default: loop forever");
+  p.addOpt("r",2,"quant_range", "specify min depth and max depth value for quantization range, default (min_d max_d): 30.0 286.0");
+  p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
   p.init(argc,argv);
 
   if(p.isOptSet("k")){
@@ -81,13 +86,27 @@ int main(int argc, char* argv[]){
     num_loops = p.getOptsInt("n")[0];
   }
 
+  if(p.isOptSet("r")){
+    min_d = p.getOptsFloat("r")[0];
+    max_d = p.getOptsFloat("r")[1];
+    if(min_d > max_d){
+      std::cerr << "ERROR: -r option must define min_d < max_d!" << std::endl;
+      p.showHelp();
+    }
+  }
+
+  if(p.isOptSet("v")){
+    verbose = true;
+  }
+
   unsigned min_frame_time_ns = 1000000000/max_fps;
 
   const unsigned colorsize = rgb_is_compressed ? 691200 : 1280 * 1080 * 3;
   const unsigned depthsize = 512 * 424 * sizeof(float);
   const unsigned depthsize_8bit = 512 * 424 * sizeof(uint8_t);
+  const unsigned quant_range_size = 2 * sizeof(float);
   const size_t frame_size_bytes((colorsize + depthsize) * num_kinect_cameras);
-  const size_t frame_size_bytes_comp((colorsize + depthsize_8bit) * num_kinect_cameras);
+  const size_t frame_size_bytes_comp((quant_range_size + colorsize + depthsize_8bit) * num_kinect_cameras);
 
   zmq::context_t ctx(1); // means single threaded
 
@@ -129,9 +148,13 @@ int main(int argc, char* argv[]){
   const unsigned bytes_rgb(colorsize);
   const unsigned bytes_d(depthsize);
   const unsigned bytes_d_8bit(depthsize_8bit);
+  const unsigned bytes_quant_range(quant_range_size);
   static unsigned char* frame_rgb = new unsigned char [1280 * 1080 * 3];
   static float* frame_d   = new float [512 * 424];
   static uint8_t* frame_d_8bit = new uint8_t [512 * 424];
+  static float* frame_quant_range = new float[2];
+  frame_quant_range[0] = min_d;
+  frame_quant_range[1] = max_d;
 
   bool fwd = true;
   int loop_num = 1;
@@ -142,6 +165,8 @@ int main(int argc, char* argv[]){
       break;
     }
     
+    sensor::timevalue start_t(sensor::clock::time());
+      
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
 
       if(perform_loop){
@@ -186,8 +211,6 @@ int main(int argc, char* argv[]){
         offset += bytes_rgb;
         memcpy((unsigned char*) frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
 
-        float min_d = 30.0f;
-        float max_d = 286.0f;
         float range = max_d - min_d;
         for(unsigned int i = 0; i < 512 * 424; ++i) {
           // scale to meters
@@ -205,7 +228,9 @@ int main(int argc, char* argv[]){
           }
         }
         
-        offset = kinect_idx * (bytes_rgb+bytes_d_8bit);
+        offset = kinect_idx * (bytes_quant_range+bytes_rgb+bytes_d_8bit);
+        memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_quant_range, bytes_quant_range);
+        offset += bytes_quant_range;
         memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_rgb, bytes_rgb);
         offset += bytes_rgb;
         memcpy((unsigned char*) zmqm_comp.data() + offset, (unsigned char*) frame_d_8bit, bytes_d_8bit);
@@ -214,7 +239,11 @@ int main(int argc, char* argv[]){
       // send frames
       sockets[s_num]->send(zmqm_comp);
     }
-    
+
+    sensor::timevalue end_t(sensor::clock::time());
+    if(verbose) {
+      std::cout << "Compression and sending took " << (end_t - start_t).msec() << "ms.\n";
+    }
     // check if fps is correct
     sensor::timevalue ts_now = sensor::clock::time();
     long long time_spent_ns = (ts_now - ts).nsec();
@@ -229,6 +258,7 @@ int main(int argc, char* argv[]){
   delete [] frame_rgb;
   delete [] frame_d;
   delete [] frame_d_8bit;
+  delete [] frame_quant_range;
 
   // cleanup
   for(unsigned s_num = 0; s_num < num_streams; ++s_num){

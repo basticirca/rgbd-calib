@@ -2,6 +2,8 @@
 #include <calibvolume.hpp>
 #include <rgbdsensor_quant.hpp>
 #include <CMDParser.hpp>
+#include <timevalue.hpp>
+#include <clock.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -9,8 +11,13 @@
 int main(int argc, char* argv[]){
 
   CMDParser p("basefilename_cv .... serverport");
+  p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
   p.init(argc,argv);
 
+  bool verbose = false;
+  if(p.isOptSet("v")){
+    verbose = true;
+  }
 
   const unsigned num_streams(p.getArgs().size() - 1);
   std::vector<CalibVolume*> cvs;
@@ -20,7 +27,6 @@ int main(int argc, char* argv[]){
     std::string filename_uv(basefilename + "_uv");
     cvs.push_back(new CalibVolume(filename_xyz.c_str(), filename_uv.c_str()));
   }
-
 
   RGBDConfig cfg;
   cfg.serverport = p.getArgs()[num_streams];
@@ -42,7 +48,12 @@ int main(int argc, char* argv[]){
 
 
     // receive frames
+    sensor::timevalue start_t(sensor::clock::time());
     sensor.recv(false /*do not recv ir!*/);
+    sensor::timevalue end_t(sensor::clock::time());
+    if(verbose) {
+      std::cout << "Receiving and decompressing took " << (end_t - start_t).msec() << "ms.\n";
+    }
     sensor.display_rgb_d();
 
     glPointSize(1.0);

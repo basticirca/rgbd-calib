@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
   float max_fps = 20.0;
   std::string socket_ip = "127.0.0.01";
   unsigned base_socket_port = 7000;
+  bool verbose = false;
   CMDParser p("play_this_filename ...");
   p.addOpt("k",1,"num_kinect_cameras", "specify how many kinect cameras are in stream, default: 1");
   p.addOpt("f",1,"max_fps", "specify how fast in fps the stream should be played, default: 20.0");
@@ -41,6 +42,7 @@ int main(int argc, char* argv[]){
   p.addOpt("l",2,"loop", "specify a start and end frame for looping, default: " + toString(start_loop) + " " + toString(end_loop));
   p.addOpt("w",-1,"swing", "enable swing looping mode, default: false");
   p.addOpt("n",1,"num_loops", "loop n time, default: loop forever");
+  p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
   p.init(argc,argv);
 
   if(p.isOptSet("k")){
@@ -78,6 +80,10 @@ int main(int argc, char* argv[]){
 
   if(p.isOptSet("n")){
     num_loops = p.getOptsInt("n")[0];
+  }
+
+  if(p.isOptSet("v")){
+    verbose = true;
   }
 
   unsigned min_frame_time_ns = 1000000000/max_fps;
@@ -132,6 +138,8 @@ int main(int argc, char* argv[]){
       break;
     }
     
+    sensor::timevalue start_t(sensor::clock::time());
+    
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
 
       if(perform_loop){
@@ -167,6 +175,11 @@ int main(int argc, char* argv[]){
       fbs[s_num]->read((unsigned char*) zmqm.data(), frame_size_bytes);
       // send frames
       sockets[s_num]->send(zmqm);
+    }
+
+    sensor::timevalue end_t(sensor::clock::time());
+    if(verbose) {
+      std::cout << "Sending took " << (end_t - start_t).msec() << "ms.\n";
     }
 
     // check if fps is correct
