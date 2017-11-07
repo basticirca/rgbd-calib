@@ -1,5 +1,5 @@
-#ifndef RGBD_CALIB_RGBDSENSOR_8BIT_HPP
-#define RGBD_CALIB_RGBDSENSOR_8BIT_HPP
+#ifndef RGBD_CALIB_RGBDSENSOR_QUANT_HPP
+#define RGBD_CALIB_RGBDSENSOR_QUANT_HPP
 
 
 #include <DataTypes.hpp>
@@ -23,11 +23,11 @@
 
 
 
-class RGBDSensor8Bit{
+class RGBDSensorQuant{
 
 public:
-  RGBDSensor8Bit(const RGBDConfig& cfg, unsigned num_of_slaves = 0);
-  ~RGBDSensor8Bit();
+  RGBDSensorQuant(const RGBDConfig& cfg, unsigned num_of_slaves = 0);
+  ~RGBDSensorQuant();
 
   RGBDConfig config;
 
@@ -65,4 +65,4 @@ private:
 };
 
 
-#endif // #ifndef RGBD_CALIB_RGBDSENSOR_8BIT_HPP
+#endif // #ifndef RGBD_CALIB_RGBDSENSOR_QUANT_HPP

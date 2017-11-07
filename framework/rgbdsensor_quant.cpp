@@ -1,4 +1,4 @@
-#include "rgbdsensor_8bit.hpp"
+#include "rgbdsensor_quant.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -32,7 +32,7 @@ namespace{
 
 }
 
-RGBDSensor8Bit::RGBDSensor8Bit(const RGBDConfig& cfg, unsigned num_of_slaves)
+RGBDSensorQuant::RGBDSensorQuant(const RGBDConfig& cfg, unsigned num_of_slaves)
   : config(cfg),
     frame_rgb(0),
     frame_ir(0),
@@ -84,7 +84,7 @@ RGBDSensor8Bit::RGBDSensor8Bit(const RGBDConfig& cfg, unsigned num_of_slaves)
 
 
 
-RGBDSensor8Bit::~RGBDSensor8Bit(){
+RGBDSensorQuant::~RGBDSensorQuant(){
   delete [] frame_rgb;
   delete [] frame_ir;
   delete [] frame_d;
@@ -97,7 +97,7 @@ RGBDSensor8Bit::~RGBDSensor8Bit(){
 
 
 glm::vec3
-RGBDSensor8Bit::calc_pos_d(float x, float y, float d){
+RGBDSensorQuant::calc_pos_d(float x, float y, float d){
   const float x_d  = ((x - config.principal_d.x)/config.focal_d.x) * d;
   const float y_d  = ((y - config.principal_d.y)/config.focal_d.y) * d;
   return glm::vec3(x_d, y_d, d);
@@ -105,7 +105,7 @@ RGBDSensor8Bit::calc_pos_d(float x, float y, float d){
 
 
 glm::vec2
-RGBDSensor8Bit::calc_pos_rgb(const glm::vec3& pos_d){
+RGBDSensorQuant::calc_pos_rgb(const glm::vec3& pos_d){
 
   glm::vec4 pos_d_H(pos_d.x, pos_d.y, pos_d.z, 1.0f);
   glm::vec4 pos_rgb_H = config.eye_d_to_eye_rgb * pos_d_H;    
@@ -120,7 +120,7 @@ RGBDSensor8Bit::calc_pos_rgb(const glm::vec3& pos_d){
 }
 
 void
-RGBDSensor8Bit::recv(bool recvir){
+RGBDSensorQuant::recv(bool recvir){
 
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
   const unsigned bytes_d(config.size_d.x * config.size_d.y * sizeof(float));
@@ -170,7 +170,7 @@ RGBDSensor8Bit::recv(bool recvir){
 }
 
 void
-RGBDSensor8Bit::display_rgb_d(){
+RGBDSensorQuant::display_rgb_d(){
   // skipped for now
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
   const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y);
@@ -188,7 +188,7 @@ RGBDSensor8Bit::display_rgb_d(){
 }
 
 glm::vec3
-RGBDSensor8Bit::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned stream_num){
+RGBDSensorQuant::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned stream_num){
 
   glm::vec3 rgb;
 
@@ -254,7 +254,7 @@ RGBDSensor8Bit::get_rgb_bilinear_normalized(const glm::vec2& pos_rgb, unsigned s
 
 
 glm::mat4
-RGBDSensor8Bit::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checkerboard& cb){
+RGBDSensorQuant::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checkerboard& cb){
 
 
   // find slowest ChessboardPose
@@ -341,10 +341,10 @@ RGBDSensor8Bit::guess_eye_d_to_world(const ChessboardSampling& cbs, const Checke
 
 
 glm::mat4
-RGBDSensor8Bit::guess_eye_d_to_world_static(const ChessboardSampling& cbs, const Checkerboard& cb){
+RGBDSensorQuant::guess_eye_d_to_world_static(const ChessboardSampling& cbs, const Checkerboard& cb){
 
   if(cbs.getIRs().empty() || cbs.getPoses().empty()){
-    std::cerr << "ERROR in RGBDSensor8Bit::guess_eye_d_to_world_static: no Chessboard found" << std::endl;
+    std::cerr << "ERROR in RGBDSensorQuant::guess_eye_d_to_world_static: no Chessboard found" << std::endl;
     exit(0);
   }
 
