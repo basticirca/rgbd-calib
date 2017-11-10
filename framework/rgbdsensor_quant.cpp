@@ -133,8 +133,13 @@ RGBDSensorQuant::recv(bool recvir){
   const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y * sizeof(uint8_t));
   const unsigned bytes_quant_range(2 * sizeof(float));
   const unsigned bytes_recv(bytes_rgb + bytes_d_8bit + bytes_quant_range);
-  zmq::message_t zmqm(bytes_recv + num_slaves * bytes_recv);
+  
+  const unsigned bytes_msg(bytes_recv + num_slaves * bytes_recv);
+
+  zmq::message_t zmqm(bytes_msg);
+
   m_socket.recv(&zmqm); // blocking
+  
   unsigned offset = 0;
   memcpy((unsigned char*) frame_quant_range, (unsigned char*) zmqm.data() + offset, bytes_quant_range);
   offset += bytes_quant_range;

@@ -126,7 +126,7 @@ RGBDSensor::recv(bool recvir){
   const unsigned bytes_d(config.size_d.x * config.size_d.y * sizeof(float));
   const unsigned bytes_recv(recvir ? bytes_rgb + bytes_ir + bytes_d :
 			    bytes_rgb + bytes_d);
-  zmq::message_t zmqm(bytes_recv + num_slaves * (bytes_rgb + bytes_d));
+  zmq::message_t zmqm(bytes_recv + num_slaves * bytes_recv);
   m_socket.recv(&zmqm); // blocking
   unsigned offset = 0;
   memcpy((unsigned char*) frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
