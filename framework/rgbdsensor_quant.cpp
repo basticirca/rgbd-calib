@@ -155,17 +155,16 @@ RGBDSensorQuant::recv(bool recvir){
   float min_d = frame_quant_range[0];
   float max_d = frame_quant_range[1];
   float range = max_d - min_d;
-  float invalid_depth = 10.0f;
+  float invalid_depth = 0.0f;
   float depth_f;
   for(unsigned int i = 0; i < 512 * 424; ++i) {
     if(frame_d_8bit[i] == 0 || frame_d_8bit[i] == 255) {
       frame_d[i] = invalid_depth;
-      continue;
     }
     else {
       // scale to centimeters
       depth_f = (float) frame_d_8bit[i];
-      depth_f = (depth_f/255)*range + min_d;
+      depth_f = (depth_f/255.0f)*range + min_d;
       frame_d[i] = depth_f / 100.0f;
     }
     for(unsigned slave_i = 0; slave_i < num_slaves; ++slave_i){
@@ -177,7 +176,7 @@ RGBDSensorQuant::recv(bool recvir){
         continue;
       }
       depth_f = (float) slave_frames_d_8_bit[slave_i][i];
-      depth_f = (depth_f/255)*range + min_d;
+      depth_f = (depth_f/255.0f)*range + min_d;
       slave_frames_d[slave_i][i] = depth_f / 100.0f;
     }
   }
@@ -185,6 +184,7 @@ RGBDSensorQuant::recv(bool recvir){
 
 void
 RGBDSensorQuant::display_rgb_d(){
+  /*
   // skipped for now
   const unsigned bytes_rgb(3 * config.size_rgb.x * config.size_rgb.y);
   const unsigned bytes_d_8bit(config.size_d.x * config.size_d.y);
@@ -199,6 +199,7 @@ RGBDSensorQuant::display_rgb_d(){
   memcpy(m_cv_depth_image->imageData, slave_frames_d_8_bit[s_num_debug], bytes_d_8bit);
   cvShowImage( "depth", m_cv_depth_image);
   int key = cvWaitKey(10);
+  */
 }
 
 glm::vec3

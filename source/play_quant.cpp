@@ -223,7 +223,8 @@ int main(int argc, char* argv[]){
           }
           else {
             // map between 0-255;
-            depth_f = floor((depth_f - min_d) / range * 256);
+            depth_f = (depth_f - min_d) / range * 255;
+            depth_f = std::max(0.0f, std::min(depth_f, 255.0f));
             frame_d_8bit[i] = (uint8_t) depth_f;
           }
         }

@@ -38,7 +38,6 @@ int main(int argc, char* argv[]){
 
   Window win(glm::ivec2(800,800), true /*3D mode*/);
 
-
   while (!win.shouldClose()) {
 
     auto t = win.getTime();
@@ -79,6 +78,7 @@ int main(int argc, char* argv[]){
       				pos2D_rgb_norm.y * sensor.config.size_rgb.y);
       	  
       	  glm::vec3 rgb = sensor.get_rgb_bilinear_normalized(pos2D_rgb, s_num);
+          
       	  glColor3f(rgb.x, rgb.y, rgb.z);
       	  glVertex3f(pos3D.x, pos3D.y, pos3D.z);
 
