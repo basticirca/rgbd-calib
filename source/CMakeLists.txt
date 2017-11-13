@@ -22,6 +22,10 @@ add_executable(viewer_quant viewer_quant.cpp)
 target_link_libraries(viewer_quant framework)
 install(TARGETS viewer_quant DESTINATION bin)
 
+add_executable(viewer_pc viewer_pc.cpp)
+target_link_libraries(viewer_pc framework)
+install(TARGETS viewer_pc DESTINATION bin)
+
 add_executable(tracker tracker.cpp)
 target_link_libraries(tracker framework)
 install(TARGETS tracker DESTINATION bin)
@@ -81,6 +85,10 @@ install(TARGETS play DESTINATION bin)
 add_executable(play_quant play_quant.cpp)
 target_link_libraries(play_quant framework)
 install(TARGETS play_quant DESTINATION bin)
+
+add_executable(play_pc play_pc.cpp)
+target_link_libraries(play_pc framework)
+install(TARGETS play_pc DESTINATION bin)
 
 add_executable(play_sweep play_sweep.cpp)
 target_link_libraries(play_sweep framework)
