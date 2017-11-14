@@ -39,13 +39,14 @@ int main(int argc, char* argv[]){
   std::string endpoint("tcp://" + socket_name);
   socket.connect(endpoint.c_str());
 
-  unsigned num_header_fields = 1;
-  unsigned* header = new unsigned[num_header_fields];
-  const unsigned bytes_header(num_header_fields * sizeof(unsigned));
+  unsigned num_header_fields = 7;
+  float* header = new float[num_header_fields];
+  const unsigned bytes_header(num_header_fields * sizeof(float));
   unsigned bytes_points;
   unsigned num_points;
 
-  PointCloud pc;
+  //PointCloud pc;
+  PointCloud8 pc;
   unsigned offset = 0;
   while (!win.shouldClose()) {
 
@@ -66,12 +67,19 @@ int main(int argc, char* argv[]){
     offset = 0;
     memcpy( (unsigned char*) header, (const unsigned char* ) zmqm.data() + offset, bytes_header);
     offset += bytes_header;
-    num_points = header[0];
+    num_points = (unsigned) header[0];
     
-    bytes_points = num_points*sizeof(glm::vec3);
+    //bytes_points = num_points*sizeof(Vec32);
+    bytes_points = num_points*sizeof(Vec8);
 
     pc.clear();
     pc.points.resize(num_points);
+    pc.bounding_box.x_min = header[1];
+    pc.bounding_box.x_max = header[2];
+    pc.bounding_box.y_min = header[3];
+    pc.bounding_box.y_max = header[4];
+    pc.bounding_box.z_min = header[5];
+    pc.bounding_box.z_max = header[6];
     memcpy( (unsigned char*) pc.points.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
     offset += bytes_points;
     pc.colors.resize(num_points);
@@ -87,8 +95,10 @@ int main(int argc, char* argv[]){
     glBegin(GL_POINTS);
 
     for(unsigned p_idx = 0; p_idx < pc.size(); ++p_idx) {
-      glColor3f(pc.colors[p_idx].x, pc.colors[p_idx].y, pc.colors[p_idx].z);
-      glVertex3f(pc.points[p_idx].x, pc.points[p_idx].y, pc.points[p_idx].z);
+      // glColor3f(pc.colors[p_idx].x, pc.colors[p_idx].y, pc.colors[p_idx].z);
+      // glVertex3f(pc.points[p_idx].x, pc.points[p_idx].y, pc.points[p_idx].z);
+      glColor3f(pc.getColor32(p_idx).x, pc.getColor32(p_idx).y, pc.getColor32(p_idx).z);
+      glVertex3f(pc.getPoint32(p_idx).x, pc.getPoint32(p_idx).y, pc.getPoint32(p_idx).z);
     }
   
     glEnd();

@@ -21,12 +21,24 @@ public:
    * from frame into pc.
    * Returns pc.
   */
-  PointCloud* reconstructPointCloud();
+  PointCloud* reconstructPointCloud32();
+  
+  /* 
+   * Reconstructs and compresses point cloud 
+   * from frame into pc8.
+   * Returns pc8.
+  */
+  PointCloud8* reconstructPointCloud8();
 
-  zmq::message_t createMessage();
+  /* Creates a zmq message from pc */
+  zmq::message_t createMessage32();
+
+  /* Creates a zmq message from pc8 */
+  zmq::message_t createMessage8();
 
   unsigned char* frame;
   PointCloud* pc;
+  PointCloud8* pc8;
 
 private:
   /* 
@@ -41,7 +53,7 @@ private:
   size_t header_size_bytes_;
   RGBDSensor* sensor_;
   std::vector<CalibVolume*> cvs_;
-  int* header_;
+  float* header_;
 };
 
 
