@@ -6,6 +6,8 @@
 #include <clock.hpp>
 #include <zmq.hpp>
 #include <math.h>
+#include <StreamEncoder.hpp>
+#include <PointCloud.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -100,22 +102,19 @@ int main(int argc, char* argv[]){
   cfg.size_rgb = glm::uvec2(1280, 1080);
   cfg.size_d   = glm::uvec2(512, 424);
   
-  RGBDSensor sensor(cfg, num_kinect_cameras-1);
-  
-  std::vector<CalibVolume*> cvs;
+  std::vector<std::string> cv_names;
   for(unsigned i = 0; i < num_kinect_cameras; ++i){
-    std::string basefilename = p.getArgs()[i];
-    std::string filename_xyz(basefilename + "_xyz");
-    std::string filename_uv(basefilename + "_uv");
-    cvs.push_back(new CalibVolume(filename_xyz.c_str(), filename_uv.c_str()));
+    cv_names.push_back(p.getArgs()[i]);
   }
 
   unsigned min_frame_time_ns = 1000000000/max_fps;
 
-  const unsigned colorsize = rgb_is_compressed ? 691200 : 1280 * 1080 * 3;
-  const unsigned depthsize = 512 * 424 * sizeof(float);
-  const size_t frame_size_bytes((colorsize + depthsize) * num_kinect_cameras);
+  const unsigned bytes_rgb = rgb_is_compressed ? 691200 : 1280 * 1080 * 3;
+  const unsigned bytes_d = 512 * 424 * sizeof(float);
+  const size_t frame_size_bytes((bytes_rgb + bytes_d) * num_kinect_cameras);
   
+  StreamEncoder encoder(cfg, cv_names);
+
   zmq::context_t ctx(1); // means single threaded
 
   const unsigned num_streams = 1;
@@ -152,17 +151,6 @@ int main(int argc, char* argv[]){
     sockets.push_back(socket);
   }
 
-  // compression helper vars
-  const unsigned bytes_rgb(colorsize);
-  const unsigned bytes_d(depthsize);
-  unsigned num_header_fields = 1;
-  int* header = new int[num_header_fields];
-  const unsigned bytes_header(num_header_fields * sizeof(int));
-  unsigned bytes_voxels;
-
-  std::vector<glm::vec3> points;
-  std::vector<glm::vec3> colors;
-  
   bool fwd = true;
   int loop_num = 1;
   sensor::timevalue ts(sensor::clock::time());
@@ -205,79 +193,18 @@ int main(int argc, char* argv[]){
         fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
       }
 
-      zmq::message_t zmqm(frame_size_bytes);
-      fbs[s_num]->read((unsigned char*) zmqm.data(), frame_size_bytes);
+      // read updated FileBuffer into encoder frame
+      fbs[s_num]->read(encoder.frame, frame_size_bytes);
       
-      // compress depth component and fill zmqm_comp
-      unsigned offset = 0;
-      for(unsigned int kinect_idx = 0; kinect_idx < num_kinect_cameras; ++kinect_idx) {
-        offset = kinect_idx * (bytes_rgb+bytes_d);
-        if(kinect_idx == 0) {
-          memcpy((unsigned char*) sensor.frame_rgb, (unsigned char*) zmqm.data() + offset, bytes_rgb);
-          offset += bytes_rgb;
-          memcpy((unsigned char*) sensor.frame_d, (unsigned char*) zmqm.data() + offset, bytes_d);
-        }
-        else {
-          memcpy((unsigned char*) sensor.slave_frames_rgb[kinect_idx-1], (unsigned char*) zmqm.data() + offset, bytes_rgb);
-          offset += bytes_rgb;
-          memcpy((unsigned char*) sensor.slave_frames_d[kinect_idx-1], (unsigned char*) zmqm.data() + offset, bytes_d);
-        }
-      }
+      // create point cloud from frame 
+      encoder.reconstructPointCloud();
 
-      points.clear();
-      colors.clear();
-
-      // reconstruction
-      for(unsigned k_num = 0; k_num < num_kinect_cameras; ++k_num){
-        // do 3D recosntruction for each depth pixel
-        for(unsigned y = 0; y < sensor.config.size_d.y; ++y){
-          for(unsigned x = 0; x < (sensor.config.size_d.x - 3); ++x){
-            const unsigned d_idx = y* sensor.config.size_d.x + x;
-            float d = k_num == 0 ? sensor.frame_d[d_idx] : sensor.slave_frames_d[k_num - 1][d_idx];
-            if(d < cvs[k_num]->min_d || d > cvs[k_num]->max_d)
-              continue;
-            
-            glm::vec3 pos3D;
-            glm::vec2 pos2D_rgb;
-            
-            pos3D = cvs[k_num]->lookupPos3D( x * 1.0/sensor.config.size_d.x,
-                     y * 1.0/sensor.config.size_d.y, d);
-            glm::vec2 pos2D_rgb_norm = cvs[k_num]->lookupPos2D_normalized( x * 1.0/sensor.config.size_d.x, 
-                           y * 1.0/sensor.config.size_d.y, d);
-            pos2D_rgb = glm::vec2(pos2D_rgb_norm.x * sensor.config.size_rgb.x,
-                pos2D_rgb_norm.y * sensor.config.size_rgb.y);
-            
-            glm::vec3 rgb = sensor.get_rgb_bilinear_normalized(pos2D_rgb, k_num);
-            
-            points.push_back(pos3D);
-            colors.push_back(rgb);
-          }
-        }
-      }
-
-      // store num points in header
-      header[0] = points.size();
-      
-      // times 2 because of color
-      bytes_voxels = 2 * points.size() * sizeof(glm::vec3);
-      
-      // package pc into message
-      zmq::message_t zmqm_pc(bytes_header + bytes_voxels);
-
-      offset = 0;
-      memcpy( (unsigned char* ) zmqm_pc.data() + offset, (const unsigned char*) header, bytes_header);
-      offset += bytes_header;
-      memcpy( (unsigned char* ) zmqm_pc.data() + offset, (const unsigned char*) points.data(), bytes_voxels / 2);
-      offset += bytes_voxels / 2;
-      memcpy( (unsigned char* ) zmqm_pc.data() + offset, (const unsigned char*) colors.data(), bytes_voxels / 2);
-      
       if(verbose) {
-        std::cout << "Sending " << points.size() << " points.\n";
-        std::cout << " > message size: " << bytes_header+bytes_voxels << " bytes\n";
+        std::cout << "Sending " << encoder.pc->size() << " points.\n";
       }
 
       // send point cloud
-      sockets[s_num]->send(zmqm_pc);
+      sockets[s_num]->send(encoder.createMessage());
     }
 
     sensor::timevalue end_t(sensor::clock::time());
