@@ -4,6 +4,7 @@
 #include <CMDParser.hpp>
 #include <timevalue.hpp>
 #include <clock.hpp>
+#include <PointCloud.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -44,8 +45,7 @@ int main(int argc, char* argv[]){
   unsigned bytes_points;
   unsigned num_points;
 
-  std::vector<glm::vec3> points;
-  std::vector<glm::vec3> colors;
+  PointCloud pc;
   unsigned offset = 0;
   while (!win.shouldClose()) {
 
@@ -70,27 +70,25 @@ int main(int argc, char* argv[]){
     
     bytes_points = num_points*sizeof(glm::vec3);
 
-    points.clear();
-    points.resize(num_points);
-    memcpy( (unsigned char*) points.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
+    pc.clear();
+    pc.points.resize(num_points);
+    memcpy( (unsigned char*) pc.points.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
     offset += bytes_points;
-    colors.clear();
-    colors.resize(num_points);
-    memcpy( (unsigned char*) colors.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
+    pc.colors.resize(num_points);
+    memcpy( (unsigned char*) pc.colors.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
     
     sensor::timevalue end_t(sensor::clock::time());
     if(verbose) {
       std::cout << "Receiving took " << (end_t - start_t).msec() << "ms.\n";
-      std::cout << " > Points: " << points.size() << "\n";
-      std::cout << " > Colors: " << colors.size() << "\n";
+      std::cout << " > Points: " << pc.size() << "\n";
     }
 
     glPointSize(1.0);
     glBegin(GL_POINTS);
 
-    for(unsigned p_idx = 0; p_idx < points.size(); ++p_idx) {
-      glColor3f(colors[p_idx].x, colors[p_idx].y, colors[p_idx].z);
-      glVertex3f(points[p_idx].x, points[p_idx].y, points[p_idx].z);
+    for(unsigned p_idx = 0; p_idx < pc.size(); ++p_idx) {
+      glColor3f(pc.colors[p_idx].x, pc.colors[p_idx].y, pc.colors[p_idx].z);
+      glVertex3f(pc.points[p_idx].x, pc.points[p_idx].y, pc.points[p_idx].z);
     }
   
     glEnd();
