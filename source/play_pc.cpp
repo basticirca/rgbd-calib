@@ -197,16 +197,14 @@ int main(int argc, char* argv[]){
       fbs[s_num]->read(encoder.frame, frame_size_bytes);
       
       // create point cloud from frame 
-      //encoder.reconstructPointCloud32();
-      encoder.reconstructPointCloud8();
+      encoder.reconstructPointCloud(POINT_CLOUD_TYPE::PC_8);
 
       if(verbose) {
-        std::cout << "Sending " << encoder.pc8->size() << " points.\n";
+        std::cout << "Sending " << encoder.pc->size() << " points.\n";
       }
 
       // send point cloud
-      //sockets[s_num]->send(encoder.createMessage32());
-      sockets[s_num]->send(encoder.createMessage8());
+      sockets[s_num]->send(encoder.createMessage());
     }
 
     sensor::timevalue end_t(sensor::clock::time());

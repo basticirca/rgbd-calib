@@ -16,29 +16,18 @@ public:
   StreamEncoder(RGBDConfig const& config, std::vector<std::string> const& cv_names);
   ~StreamEncoder();
 
-  /* 
-   * Reconstructs point cloud 
-   * from frame into pc.
-   * Returns pc.
+  /*
+   * Reconstructs a point cloud 
+   * of specified type into pc_.
+   * Returns pc_.
   */
-  PointCloud* reconstructPointCloud32();
-  
-  /* 
-   * Reconstructs and compresses point cloud 
-   * from frame into pc8.
-   * Returns pc8.
-  */
-  PointCloud8* reconstructPointCloud8();
-
-  /* Creates a zmq message from pc */
-  zmq::message_t createMessage32();
+  PointCloud* reconstructPointCloud(POINT_CLOUD_TYPE type);
 
   /* Creates a zmq message from pc8 */
-  zmq::message_t createMessage8();
+  zmq::message_t createMessage();
 
   unsigned char* frame;
   PointCloud* pc;
-  PointCloud8* pc8;
 
 private:
   /* 
@@ -46,6 +35,12 @@ private:
    * All previously set data in frame will be lost.
   */
   void allocateFrame();
+
+  /* Helper function to ensures pc_ is of given type */
+  void ensurePointCloudType(POINT_CLOUD_TYPE type);
+
+  /* creates a PointCloud of given type to pc_ */
+  void createPC(POINT_CLOUD_TYPE type);
 
   size_t frame_size_bytes_;
   size_t clr_size_bytes_;

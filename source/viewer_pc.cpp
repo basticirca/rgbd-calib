@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <cassert>
 #include <zmq.hpp>
 
 int main(int argc, char* argv[]){
@@ -39,14 +39,13 @@ int main(int argc, char* argv[]){
   std::string endpoint("tcp://" + socket_name);
   socket.connect(endpoint.c_str());
 
-  unsigned num_header_fields = 7;
+  unsigned num_header_fields = 8;
   float* header = new float[num_header_fields];
   const unsigned bytes_header(num_header_fields * sizeof(float));
   unsigned bytes_points;
   unsigned num_points;
 
-  //PointCloud pc;
-  PointCloud8 pc;
+  PointCloud* pc = nullptr;
   unsigned offset = 0;
   while (!win.shouldClose()) {
 
@@ -69,36 +68,50 @@ int main(int argc, char* argv[]){
     offset += bytes_header;
     num_points = (unsigned) header[0];
     
-    //bytes_points = num_points*sizeof(Vec32);
-    bytes_points = num_points*sizeof(Vec8);
+    // prepare point cloud
+    POINT_CLOUD_TYPE type  = (POINT_CLOUD_TYPE) header[7];
+    if(pc==nullptr) {
+      pc = PointCloudFactory::createPointCloud(type);
+    }
+    else if(pc->type() != type) {
+      delete pc;
+      pc = PointCloudFactory::createPointCloud(type);
+    }
+    assert(pc != nullptr);
 
-    pc.clear();
-    pc.points.resize(num_points);
-    pc.bounding_box.x_min = header[1];
-    pc.bounding_box.x_max = header[2];
-    pc.bounding_box.y_min = header[3];
-    pc.bounding_box.y_max = header[4];
-    pc.bounding_box.z_min = header[5];
-    pc.bounding_box.z_max = header[6];
-    memcpy( (unsigned char*) pc.points.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
+    switch(type) {
+      case PC_32: bytes_points = num_points*sizeof(Vec32); break;
+      case PC_8: bytes_points = num_points*sizeof(Vec8); break;
+      default: bytes_points = 0;
+    }
+    assert(bytes_points != 0);
+
+    pc->clear();
+    pc->resize(num_points);
+    pc->bounding_box.x_min = header[1];
+    pc->bounding_box.x_max = header[2];
+    pc->bounding_box.y_min = header[3];
+    pc->bounding_box.y_max = header[4];
+    pc->bounding_box.z_min = header[5];
+    pc->bounding_box.z_max = header[6];
+
+    // copy point cloud data from message 
+    memcpy( (unsigned char*) pc->pointsData(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
     offset += bytes_points;
-    pc.colors.resize(num_points);
-    memcpy( (unsigned char*) pc.colors.data(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
+    memcpy( (unsigned char*) pc->colorsData(), (const unsigned char* ) zmqm.data() + offset, bytes_points);
     
     sensor::timevalue end_t(sensor::clock::time());
     if(verbose) {
       std::cout << "Receiving took " << (end_t - start_t).msec() << "ms.\n";
-      std::cout << " > Points: " << pc.size() << "\n";
+      std::cout << " > Points: " << pc->size() << "\n";
     }
 
     glPointSize(1.0);
     glBegin(GL_POINTS);
 
-    for(unsigned p_idx = 0; p_idx < pc.size(); ++p_idx) {
-      // glColor3f(pc.colors[p_idx].x, pc.colors[p_idx].y, pc.colors[p_idx].z);
-      // glVertex3f(pc.points[p_idx].x, pc.points[p_idx].y, pc.points[p_idx].z);
-      glColor3f(pc.getColor32(p_idx).x, pc.getColor32(p_idx).y, pc.getColor32(p_idx).z);
-      glVertex3f(pc.getPoint32(p_idx).x, pc.getPoint32(p_idx).y, pc.getPoint32(p_idx).z);
+    for(unsigned p_idx = 0; p_idx < pc->size(); ++p_idx) {
+      glColor3f(pc->getColor32(p_idx).x, pc->getColor32(p_idx).y, pc->getColor32(p_idx).z);
+      glVertex3f(pc->getPoint32(p_idx).x, pc->getPoint32(p_idx).y, pc->getPoint32(p_idx).z);
     }
   
     glEnd();

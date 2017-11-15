@@ -109,39 +109,108 @@ struct BoundingBox {
     float z_max;
 };
 
+enum POINT_CLOUD_TYPE {
+    PC_32,
+    PC_8
+};
+
+// PURE VIRTUAL BASE
 
 struct PointCloud {
     PointCloud()
-        : points()
+        : bounding_box()
+    {}
+
+    virtual ~PointCloud()
+    {}
+
+    virtual void addVoxel(Vec32 const& pos, Vec32 const& clr) = 0;
+
+    virtual unsigned char* pointsData() = 0;
+
+    virtual unsigned char* colorsData() = 0;
+
+    virtual Vec32 const getColor32(unsigned idx) = 0;
+
+    virtual Vec32 const getPoint32(unsigned idx) = 0;
+
+    virtual unsigned size() = 0;
+
+    virtual void resize(unsigned s) = 0; 
+
+    virtual void clear() = 0;
+
+    virtual POINT_CLOUD_TYPE type() = 0;
+
+    BoundingBox bounding_box;
+};
+
+struct PointCloud32: public PointCloud {
+    PointCloud32()
+        : PointCloud()
+        , points()
         , colors()
-        , bounding_box()
     {}
 
-    ~PointCloud() 
+    ~PointCloud32() 
     {}
 
-    void clear() 
-    {
-        points.clear();
-        colors.clear();
-    }
-
-    void addVoxel(Vec32 const& pos, Vec32 const& clr)
+    /*virtual*/ void addVoxel(Vec32 const& pos, Vec32 const& clr)
     {
         if(!bounding_box.contains(pos))
             return;
         points.push_back(pos);
         colors.push_back(clr);
     }
+
+    /*virtual*/ unsigned char* pointsData()
+    {
+        return (unsigned char*) points.data();
+    }
+
+    /*virtual*/ unsigned char* colorsData()
+    {
+        return (unsigned char*) colors.data();
+    }
+
+    /*virtual*/ Vec32 const getColor32(unsigned idx)
+    {
+        if(idx >= size())
+            return Vec32();
+        return colors[idx];
+    }
+
+    /*virtual*/ Vec32 const getPoint32(unsigned idx)
+    {
+        if(idx >= size())
+            return Vec32();
+        return points[idx];
+    }
     
-    unsigned size()
+    /*virtual*/ unsigned size()
     {
         return points.size();
     }
 
+    /*virtual*/ void resize(unsigned s)
+    {
+        points.resize(s);
+        colors.resize(s);
+    }
+
+    /*virtual*/ void clear() 
+    {
+        points.clear();
+        colors.clear();
+    }
+
+    /*virtual*/ POINT_CLOUD_TYPE type()
+    {
+        return PC_32;
+    }
+
     std::vector<Vec32> points;
     std::vector<Vec32> colors;
-    BoundingBox bounding_box;
 };
 
 // 8 bit pointcloud
@@ -173,24 +242,18 @@ struct Vec8 {
     uint8_t z;
 };
 
-struct PointCloud8 {
+struct PointCloud8: public PointCloud {
     PointCloud8()
-        : points()
+        : PointCloud()
+        , points()
         , colors()
-        , bounding_box()
         , color_bounds(0.0f,1.0f,0.0f,1.0f,0.0f,1.0f)
     {}
 
     ~PointCloud8() 
     {}
 
-    void clear() 
-    {
-        points.clear();
-        colors.clear();
-    }
-
-    void addVoxel(Vec32 const& pos, Vec32 const& clr)
+    /*virtual*/ void addVoxel(Vec32 const& pos, Vec32 const& clr)
     {
         if(!bounding_box.contains(pos))
             return;
@@ -204,7 +267,17 @@ struct PointCloud8 {
         colors.push_back(clr);
     }
 
-    Vec32 const getColor32(unsigned idx)
+    /*virtual*/ unsigned char* pointsData()
+    {
+        return (unsigned char*) points.data();
+    }
+
+    /*virtual*/ unsigned char* colorsData()
+    {
+        return (unsigned char*) colors.data();
+    }
+
+    /*virtual*/ Vec32 const getColor32(unsigned idx)
     {
         Vec32 res;
         if(idx >= size())
@@ -215,7 +288,7 @@ struct PointCloud8 {
         return res;
     }
 
-    Vec32 const getPoint32(unsigned idx)
+    /*virtual*/ Vec32 const getPoint32(unsigned idx)
     {
         Vec32 res;
         if(idx >= size())
@@ -226,15 +299,41 @@ struct PointCloud8 {
         return res;
     }
     
-    unsigned size()
+    /*virtual*/ unsigned size()
     {
         return points.size();
     }
 
+    /*virtual*/ void resize(unsigned s)
+    {
+        points.resize(s);
+        colors.resize(s);
+    }
+
+    /*virtual*/ void clear() 
+    {
+        points.clear();
+        colors.clear();
+    }
+
+    /*virtual*/ POINT_CLOUD_TYPE type()
+    {
+        return PC_8;
+    }
+
     std::vector<Vec8> points;
     std::vector<Vec8> colors;
-    BoundingBox bounding_box;
     BoundingBox color_bounds;
+};
+
+struct PointCloudFactory {
+    static PointCloud* createPointCloud(POINT_CLOUD_TYPE type) {
+        switch(type) {
+            case PC_32: return new PointCloud32;
+            case PC_8: return new PointCloud8;
+            default: return nullptr;
+        }
+    }
 };
 
 #endif // #ifndef  POINT_CLOUD_HPP
