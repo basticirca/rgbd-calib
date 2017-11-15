@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
     switch(type) {
       case PC_32: bytes_points = num_points*sizeof(Vec32); break;
       case PC_8: bytes_points = num_points*sizeof(Vec8); break;
+      case PC_i32: bytes_points = num_points*sizeof(uint32_t); break;
       default: bytes_points = 0;
     }
     assert(bytes_points != 0);
@@ -112,8 +113,12 @@ int main(int argc, char* argv[]){
     glBegin(GL_POINTS);
 
     for(unsigned p_idx = 0; p_idx < pc->size(); ++p_idx) {
-      glColor3f(pc->getColor32(p_idx).x, pc->getColor32(p_idx).y, pc->getColor32(p_idx).z);
-      glVertex3f(pc->getPoint32(p_idx).x, pc->getPoint32(p_idx).y, pc->getPoint32(p_idx).z);
+      Vec32 c = pc->getColor32(p_idx);
+      Vec32 p = pc->getPoint32(p_idx);
+      //std::cout << "pos:" << p.x << ", " << p.y << ", " << p.z << std::endl;
+      //std::cout << "clr:" << c.x << ", " << c.y << ", " << c.z << std::endl;
+      glColor3f(c.x, c.y, c.z);
+      glVertex3f(p.x, p.y, p.z);
     }
   
     glEnd();

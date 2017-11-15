@@ -380,12 +380,12 @@ struct PointCloudInt32: public PointCloud {
         // float value, float v_min, float v_max, uint8_t bit_size
         uint32_t pv = 0;
         uint32_t cv = 0;
-        pv = pv || Mapper::compressToBitSize(pos.x, bounding_box.x_min, bounding_box.x_max, 11);
-        pv = pv || (Mapper::compressToBitSize(pos.y, bounding_box.y_min, bounding_box.y_max, 10) << 11);
-        pv = pv || (Mapper::compressToBitSize(pos.z, bounding_box.z_min, bounding_box.z_max, 11) << 21);
-        cv = cv || Mapper::compressToBitSize(clr.x, color_bounds.x_min, color_bounds.x_max, 11);
-        cv = cv || (Mapper::compressToBitSize(clr.y, color_bounds.y_min, color_bounds.y_max, 10) << 11);
-        cv = cv || (Mapper::compressToBitSize(clr.z, color_bounds.z_min, color_bounds.z_max, 11) << 21);
+        pv = pv | Mapper::compressToBitSize(pos.x, bounding_box.x_min, bounding_box.x_max, 11);
+        pv = pv | (Mapper::compressToBitSize(pos.y, bounding_box.y_min, bounding_box.y_max, 10) << 11);
+        pv = pv | (Mapper::compressToBitSize(pos.z, bounding_box.z_min, bounding_box.z_max, 11) << 21);
+        cv = cv | Mapper::compressToBitSize(clr.x, color_bounds.x_min, color_bounds.x_max, 11);
+        cv = cv | (Mapper::compressToBitSize(clr.y, color_bounds.y_min, color_bounds.y_max, 10) << 11);
+        cv = cv | (Mapper::compressToBitSize(clr.z, color_bounds.z_min, color_bounds.z_max, 11) << 21);
         points.push_back(pv);
         colors.push_back(cv);
     }
@@ -413,15 +413,15 @@ struct PointCloudInt32: public PointCloud {
             return res;
         
         uint32_t v = colors[idx];
-        uint32_t x = v & 0x11F;
+        uint32_t x = v & 0x7FF;
         v = v >> 11;
-        uint32_t y = v & 0x10F;
+        uint32_t y = v & 0x3FF;
         v = v >> 10;
-        uint32_t z = v & 0x11F;
+        uint32_t z = v & 0x7FF;
 
-        res.x = Mapper::decompress(x, bounding_box.x_min, bounding_box.x_max, (uint32_t) pow(2,11)-1);
-        res.y = Mapper::decompress(y, bounding_box.y_min, bounding_box.y_max, (uint32_t) pow(2,10)-1);
-        res.z = Mapper::decompress(z, bounding_box.z_min, bounding_box.z_max, (uint32_t) pow(2,11)-1);
+        res.x = Mapper::decompress(x, color_bounds.x_min, color_bounds.x_max, (uint32_t) pow(2,11)-1);
+        res.y = Mapper::decompress(y, color_bounds.y_min, color_bounds.y_max, (uint32_t) pow(2,10)-1);
+        res.z = Mapper::decompress(z, color_bounds.z_min, color_bounds.z_max, (uint32_t) pow(2,11)-1);
 
         return res;
     }
@@ -433,11 +433,11 @@ struct PointCloudInt32: public PointCloud {
             return res;
         
         uint32_t v = points[idx];
-        uint32_t x = v & 0x11F;
+        uint32_t x = v & 0x7FF;
         v = v >> 11;
-        uint32_t y = v & 0x10F;
+        uint32_t y = v & 0x3FF;
         v = v >> 10;
-        uint32_t z = v & 0x11F;
+        uint32_t z = v & 0x7FF;
 
         res.x = Mapper::decompress(x, bounding_box.x_min, bounding_box.x_max, (uint32_t) pow(2,11)-1);
         res.y = Mapper::decompress(y, bounding_box.y_min, bounding_box.y_max, (uint32_t) pow(2,10)-1);

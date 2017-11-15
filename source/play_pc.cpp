@@ -209,7 +209,7 @@ int main(int argc, char* argv[]){
       fbs[s_num]->read(encoder.frame, frame_size_bytes);
       
       // create point cloud from frame 
-      encoder.reconstructPointCloud(POINT_CLOUD_TYPE::PC_8);
+      encoder.reconstructPointCloud(POINT_CLOUD_TYPE::PC_i32);
 
       if(verbose) {
         std::cout << "Sending " << encoder.pc->size() << " points.\n";
