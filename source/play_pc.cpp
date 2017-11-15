@@ -37,6 +37,7 @@ int main(int argc, char* argv[]){
   float min_d = 30.0f;
   float max_d = 286.0f;
   bool verbose = false;
+  BoundingBox bb(-1.0f, 1.0f, 0.0f, 2.0f, -1.0f, 1.0f);
   CMDParser p("play_this_filename ...");
   p.addOpt("f",1,"max_fps", "specify how fast in fps the stream should be played, default: 20.0");
   p.addOpt("c",-1,"rgb_is_compressed", "enable compressed recording for rgb stream, default: false");
@@ -47,6 +48,7 @@ int main(int argc, char* argv[]){
   p.addOpt("n",1,"num_loops", "loop n time, default: loop forever");
   p.addOpt("r",2,"quant_range", "specify min depth and max depth value for quantization range, default (min_d max_d): 30.0 286.0");
   p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
+  p.addOpt("b",6,"bounding_box", "specifies the reconstruction bounding box, default (x_min x_max y_min y_max z_min z_max): -1 1 0 2 -1 1 ");
   p.init(argc,argv);
 
   if(p.isOptSet("f")){
@@ -96,6 +98,15 @@ int main(int argc, char* argv[]){
     verbose = true;
   }
 
+  if(p.isOptSet("b")) {
+    bb.x_min = p.getOptsFloat("b")[0];
+    bb.x_max = p.getOptsFloat("b")[1];
+    bb.y_min = p.getOptsFloat("b")[2];
+    bb.y_max = p.getOptsFloat("b")[3];
+    bb.z_min = p.getOptsFloat("b")[4];
+    bb.z_max = p.getOptsFloat("b")[5];
+  }
+
   const unsigned num_kinect_cameras(p.getArgs().size() - 1);
   
   RGBDConfig cfg;
@@ -114,6 +125,7 @@ int main(int argc, char* argv[]){
   const size_t frame_size_bytes((bytes_rgb + bytes_d) * num_kinect_cameras);
   
   StreamEncoder encoder(cfg, cv_names);
+  encoder.default_bounding_box = bb;
 
   zmq::context_t ctx(1); // means single threaded
 

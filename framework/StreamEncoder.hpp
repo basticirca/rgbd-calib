@@ -28,6 +28,7 @@ public:
 
   unsigned char* frame;
   PointCloud* pc;
+  BoundingBox default_bounding_box;
 
 private:
   /* 

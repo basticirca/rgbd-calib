@@ -18,6 +18,7 @@ namespace {
 StreamEncoder::StreamEncoder(RGBDConfig const& config, std::vector<std::string> const& cv_names)
   : frame()
   , pc(nullptr)
+  , default_bounding_box()
   , frame_size_bytes_()
   , clr_size_bytes_()
   , depth_size_bytes_()
@@ -137,6 +138,9 @@ zmq::message_t StreamEncoder::createMessage()
     case PC_8: 
       voxel_size_bytes = 2 * ((unsigned) header_[0]) * sizeof(Vec8);
       break;
+    case PC_i32: 
+      voxel_size_bytes = 2 * ((unsigned) header_[0]) * sizeof(uint32_t);
+      break;
     default:
       return zmq::message_t();      
   }
@@ -173,10 +177,5 @@ void StreamEncoder::ensurePointCloudType(POINT_CLOUD_TYPE type)
 void StreamEncoder::createPC(POINT_CLOUD_TYPE type)
 {
   pc = PointCloudFactory::createPointCloud(type);
-  pc->bounding_box.x_min = -1.0f;
-  pc->bounding_box.x_max = 1.0f;
-  pc->bounding_box.y_min = 0.0f;
-  pc->bounding_box.y_max = 2.0f;
-  pc->bounding_box.z_min = -1.0f;
-  pc->bounding_box.z_max = 1.0f;
+  pc->bounding_box = default_bounding_box;
 }

@@ -103,6 +103,8 @@ int main(int argc, char* argv[]){
     sensor::timevalue end_t(sensor::clock::time());
     if(verbose) {
       std::cout << "Receiving took " << (end_t - start_t).msec() << "ms.\n";
+      std::cout << " > Message size: " << zmqm.size() << "\n";
+      std::cout << " > Type: " << pc->type() << "\n";
       std::cout << " > Points: " << pc->size() << "\n";
     }
 
