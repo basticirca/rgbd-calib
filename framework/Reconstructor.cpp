@@ -1,31 +1,17 @@
-#include "StreamEncoder.hpp"
+#include "Reconstructor.hpp"
 
 #include <cassert>
+#include <iostream>
 
-namespace {
-
-  template <class T>
-  inline std::string
-  toString(T value)
-  {
-    std::ostringstream stream;
-    stream << value;
-    return stream.str();
-  }
-
-}
-
-StreamEncoder::StreamEncoder(RGBDConfig const& config, std::vector<std::string> const& cv_names)
+Reconstructor::Reconstructor(RGBDConfig const& config, std::vector<std::string> const& cv_names)
   : frame()
   , pc(nullptr)
   , default_bounding_box()
   , frame_size_bytes_()
   , clr_size_bytes_()
   , depth_size_bytes_()
-  , header_size_bytes_()
   , sensor_(nullptr)
   , cvs_()
-  , header_()
 {
   sensor_ = new RGBDSensor(config, cv_names.size()-1);
   
@@ -43,26 +29,22 @@ StreamEncoder::StreamEncoder(RGBDConfig const& config, std::vector<std::string> 
   }
   
   allocateFrame();
-
-  // num points + bounding box
-  header_ = new float[8];
-  header_size_bytes_ = 8 * sizeof(float);
 }
 
 
-StreamEncoder::~StreamEncoder()
+Reconstructor::~Reconstructor()
 {
   delete [] frame;
   delete sensor_;
   for(unsigned i = 0; i < cvs_.size(); ++i)
     delete cvs_[i];
   delete pc;
-  delete [] header_; 
 }
 
-PointCloud* StreamEncoder::reconstructPointCloud(POINT_CLOUD_TYPE type)
+PointCloud<Vec32, Vec32>* Reconstructor::reconstructPointCloud()
 {
-  ensurePointCloudType(type);
+  if(pc == nullptr)
+    createPC();
 
   unsigned num_kinect_cameras = sensor_->slave_frames_rgb.size() + 1;
   
@@ -106,76 +88,23 @@ PointCloud* StreamEncoder::reconstructPointCloud(POINT_CLOUD_TYPE type)
         
         glm::vec3 rgb = sensor_->get_rgb_bilinear_normalized(pos2D_rgb, k_num);
         
-        // 8 bit conversion done by PointCloud8
-        pc->addVoxel(Vec32(pos3D), Vec32(rgb));
+        Vec32 v_pos(pos3D);
+        if(pc->bounding_box.contains(v_pos))
+          pc->addVoxel(v_pos, Vec32(rgb));
       }
     }
   }
 
-  // store num points in header
-  header_[0] = pc->size();
-  header_[1] = pc->bounding_box.x_min;
-  header_[2] = pc->bounding_box.x_max;
-  header_[3] = pc->bounding_box.y_min;
-  header_[4] = pc->bounding_box.y_max;
-  header_[5] = pc->bounding_box.z_min;
-  header_[6] = pc->bounding_box.z_max;
-  header_[7] = (float) pc->type();
-
   return pc;
 }
 
-zmq::message_t StreamEncoder::createMessage()
-{
-  if(pc == nullptr)
-    return zmq::message_t();
-
-  size_t voxel_size_bytes = 0;
-  switch(pc->type()) {
-    case PC_32: 
-      voxel_size_bytes = 2 * ((unsigned) header_[0]) * sizeof(Vec32);
-      break;
-    case PC_8: 
-      voxel_size_bytes = 2 * ((unsigned) header_[0]) * sizeof(Vec8);
-      break;
-    case PC_i32: 
-      voxel_size_bytes = 2 * ((unsigned) header_[0]) * sizeof(uint32_t);
-      break;
-    default:
-      return zmq::message_t();      
-  }
-  zmq::message_t zmqm(header_size_bytes_ + voxel_size_bytes);
-
-  unsigned offset = 0;
-  memcpy( (unsigned char* ) zmqm.data() + offset, (const unsigned char*) header_, header_size_bytes_);
-  offset += header_size_bytes_;
-  memcpy( (unsigned char* ) zmqm.data() + offset, (const unsigned char*) pc->pointsData(), voxel_size_bytes / 2);
-  offset += voxel_size_bytes / 2;
-  memcpy( (unsigned char* ) zmqm.data() + offset, (const unsigned char*) pc->colorsData(), voxel_size_bytes / 2);
-  
-  return zmqm;
-}
-
-void StreamEncoder::allocateFrame()
+void Reconstructor::allocateFrame()
 {
   delete [] frame;
   frame = new unsigned char[frame_size_bytes_ / sizeof(unsigned char)];
 }
 
-void StreamEncoder::ensurePointCloudType(POINT_CLOUD_TYPE type)
+void Reconstructor::createPC()
 {
-  if(pc == nullptr) {
-    createPC(type);
-  }
-  else if(pc->type() != type) {
-    delete pc;
-    createPC(type);
-  }
-  assert(pc != nullptr);
-}
-
-void StreamEncoder::createPC(POINT_CLOUD_TYPE type)
-{
-  pc = PointCloudFactory::createPointCloud(type);
-  pc->bounding_box = default_bounding_box;
+  pc = new PointCloud<Vec32, Vec32>(default_bounding_box);
 }

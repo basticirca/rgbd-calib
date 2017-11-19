@@ -6,7 +6,8 @@
 #include <clock.hpp>
 #include <zmq.hpp>
 #include <math.h>
-#include <StreamEncoder.hpp>
+#include <PointCloudEncoder.hpp>
+#include <Reconstructor.hpp>
 #include <PointCloud.hpp>
 
 #include <iostream>
@@ -124,8 +125,9 @@ int main(int argc, char* argv[]){
   const unsigned bytes_d = 512 * 424 * sizeof(float);
   const size_t frame_size_bytes((bytes_rgb + bytes_d) * num_kinect_cameras);
   
-  StreamEncoder encoder(cfg, cv_names);
-  encoder.default_bounding_box = bb;
+  Reconstructor reconstructor(cfg, cv_names);
+  reconstructor.default_bounding_box = bb;
+  PointCloudEncoder encoder;
 
   zmq::context_t ctx(1); // means single threaded
 
@@ -206,17 +208,17 @@ int main(int argc, char* argv[]){
       }
 
       // read updated FileBuffer into encoder frame
-      fbs[s_num]->read(encoder.frame, frame_size_bytes);
+      fbs[s_num]->read(reconstructor.frame, frame_size_bytes);
       
-      // create point cloud from frame 
-      encoder.reconstructPointCloud(POINT_CLOUD_TYPE::PC_i32);
+      reconstructor.reconstructPointCloud();
 
       if(verbose) {
-        std::cout << "Sending " << encoder.pc->size() << " points.\n";
+        std::cout << "Sending " << reconstructor.pc->size() << " points.\n";
       }
 
       // send point cloud
-      sockets[s_num]->send(encoder.createMessage());
+      zmq::message_t msg = encoder.encode(reconstructor.pc, PointCloudEncoder::PC_1x32p_1x32c);
+      sockets[s_num]->send(msg);
     }
 
     sensor::timevalue end_t(sensor::clock::time());
