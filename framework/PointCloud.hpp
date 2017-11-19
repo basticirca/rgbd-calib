@@ -49,6 +49,15 @@ struct Vec8 {
     ~Vec8()
     {}
 
+    uint32_t key()
+    {
+        uint32_t res = 0;
+        res = res | x;
+        res = res | y << 8;
+        res = res | z << 16;
+        return res;
+    }
+
     uint8_t x;
     uint8_t y;
     uint8_t z;

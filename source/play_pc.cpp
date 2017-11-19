@@ -217,7 +217,7 @@ int main(int argc, char* argv[]){
       }
 
       // send point cloud
-      zmq::message_t msg = encoder.encode(reconstructor.pc, PointCloudEncoder::PC_1x32p_1x32c);
+      zmq::message_t msg = encoder.encode(reconstructor.pc, PointCloudEncoder::PC_3x8p_3x8c);
       sockets[s_num]->send(msg);
     }
 

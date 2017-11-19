@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <iostream>
+#include <map>
+#include <utility>
 
 PointCloudEncoder::PointCloudEncoder()
   : Encoder()
@@ -113,12 +115,40 @@ void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<V
 void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<Vec8, Vec8>* to_pc)
 {
   to_pc->clear();
+  // pos_found[pos.key()] = (<idx>, <count>)
+  std::map<uint32_t, std::pair<int, int> > pos_found;
+  std::map<uint32_t, std::pair<int, int> >::iterator it;
+  unsigned total_skipped = 0;
   for(unsigned i = 0; i < from_pc->size(); ++i) {
     if(!to_pc->bounding_box.contains(from_pc->points[i]))
       continue;
-    to_pc->points.push_back(Vec32ToVec8(from_pc->points[i], to_pc->bounding_box));
-    to_pc->colors.push_back(Vec32ToVec8(from_pc->colors[i]));
+    Vec8 pos = Vec32ToVec8(from_pc->points[i], to_pc->bounding_box);
+    Vec8 clr = Vec32ToVec8(from_pc->colors[i]);
+    uint32_t pos_key = pos.key();
+    it = pos_found.find(pos_key);
+    if(it == pos_found.end()) {
+      to_pc->points.push_back(pos);
+      to_pc->colors.push_back(clr);
+      unsigned idx = to_pc->points.size() - 1;
+      unsigned count = 1;
+      std::pair<int, int> value(idx, count);
+      it = pos_found.insert(it, std::pair<uint32_t, std::pair<int, int> >(pos_key, value));
+    }
+    else {
+      Vec8 curr_clr = to_pc->colors[it->second.first];
+      float weight = 1.0f / (float) (it->second.second + 1.0f);
+      float x = weight * (float) clr.x + (1-weight) * (float) curr_clr.x;
+      float y = weight * (float) clr.y + (1-weight) * (float) curr_clr.y;
+      float z = weight * (float) clr.z + (1-weight) * (float) curr_clr.z;
+      clr.x = (uint8_t) x;
+      clr.y = (uint8_t) y;
+      clr.z = (uint8_t) z;
+      to_pc->colors[it->second.first] = clr;
+      it->second.second += 1;
+      ++total_skipped;
+    }
   }
+  std::cout << " > Skipped " << total_skipped << std::endl;
 }
 
 void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<uint32_t, uint32_t>* to_pc)
