@@ -90,6 +90,10 @@ add_executable(play_pc play_pc.cpp)
 target_link_libraries(play_pc framework)
 install(TARGETS play_pc DESTINATION bin)
 
+add_executable(play_ply_pc play_ply_pc.cpp)
+target_link_libraries(play_ply_pc framework)
+install(TARGETS play_ply_pc DESTINATION bin)
+
 add_executable(play_sweep play_sweep.cpp)
 target_link_libraries(play_sweep framework)
 install(TARGETS play_sweep DESTINATION bin)

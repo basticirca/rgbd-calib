@@ -23,6 +23,9 @@ PointCloudEncoder::~PointCloudEncoder()
 
 zmq::message_t PointCloudEncoder::encode(PointCloud<Vec32, Vec32>* point_cloud, Codec codec)
 {
+
+  std::cout << "original PC size:" << point_cloud->size() << std::endl;
+
   header_[1] = point_cloud->bounding_box.x_min;
   header_[2] = point_cloud->bounding_box.x_max;
   header_[3] = point_cloud->bounding_box.y_min;
@@ -104,12 +107,16 @@ bool PointCloudEncoder::decode(zmq::message_t& msg, PointCloud<Vec32, Vec32>* po
 void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<Vec32, Vec8>* to_pc)
 {
   to_pc->clear();
+  unsigned total_out_of_bounds = 0;
   for(unsigned i = 0; i < from_pc->size(); ++i) {
-    if(!to_pc->bounding_box.contains(from_pc->points[i]))
+    if(!to_pc->bounding_box.contains(from_pc->points[i])) {
+      ++total_out_of_bounds;
       continue;
+    }
     to_pc->points.push_back(from_pc->points[i]);
     to_pc->colors.push_back(Vec32ToVec8(from_pc->colors[i]));
   }
+  std::cout << " > Out of bounds " << total_out_of_bounds << std::endl;
 }
 
 void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<Vec8, Vec8>* to_pc)
@@ -119,9 +126,12 @@ void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<V
   std::map<uint32_t, std::pair<int, int> > pos_found;
   std::map<uint32_t, std::pair<int, int> >::iterator it;
   unsigned total_skipped = 0;
+  unsigned total_out_of_bounds = 0;
   for(unsigned i = 0; i < from_pc->size(); ++i) {
-    if(!to_pc->bounding_box.contains(from_pc->points[i]))
+    if(!to_pc->bounding_box.contains(from_pc->points[i])) {
+      ++total_out_of_bounds;
       continue;
+    }
     Vec8 pos = Vec32ToVec8(from_pc->points[i], to_pc->bounding_box);
     Vec8 clr = Vec32ToVec8(from_pc->colors[i]);
     uint32_t pos_key = pos.key();
@@ -149,19 +159,43 @@ void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<V
     }
   }
   std::cout << " > Skipped " << total_skipped << std::endl;
+  std::cout << " > Out of bounds " << total_out_of_bounds << std::endl;
 }
 
 void PointCloudEncoder::compress(PointCloud<Vec32, Vec32>* from_pc, PointCloud<uint32_t, uint32_t>* to_pc)
 {
   to_pc->clear();
+  // pos_found[pos.key()] = (<idx>, <count>)
+  std::map<uint32_t, std::pair<int, int> > pos_found;
+  std::map<uint32_t, std::pair<int, int> >::iterator it;
+  unsigned total_skipped = 0;
+  unsigned total_out_of_bounds = 0;
   for(unsigned i = 0; i < from_pc->size(); ++i) {
-    if(!to_pc->bounding_box.contains(from_pc->points[i]))
+    if(!to_pc->bounding_box.contains(from_pc->points[i])) {
+      ++total_out_of_bounds;
       continue;
+    }
     uint32_t p = Vec32ToUInt32(from_pc->points[i], to_pc->bounding_box, 11, 10, 11);
     to_pc->points.push_back(p);
     uint32_t c = Vec32ToUInt32(from_pc->colors[i], 10, 12, 10);
     to_pc->colors.push_back(c);
+
+    it = pos_found.find(p);
+    if(it == pos_found.end()) {
+      to_pc->points.push_back(p);
+      to_pc->colors.push_back(c);
+      unsigned idx = to_pc->points.size() - 1;
+      unsigned count = 1;
+      std::pair<int, int> value(idx, count);
+      it = pos_found.insert(it, std::pair<uint32_t, std::pair<int, int> >(p, value));
+    }
+    else {
+      it->second.second += 1;
+      ++total_skipped;
+    }
   }
+  std::cout << " > Skipped " << total_skipped << std::endl;
+  std::cout << " > Out of bounds " << total_out_of_bounds << std::endl;
 }
 
 void PointCloudEncoder::decompress(PointCloud<Vec32, Vec8>* from_pc, PointCloud<Vec32, Vec32>* to_pc)

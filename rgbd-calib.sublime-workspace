@@ -1,1 +1,1153 @@
-{}
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ply",
+				"ply_file_path"
+			],
+			[
+				"v",
+				"v_idx"
+			],
+			[
+				"vertex",
+				"vertex_count"
+			],
+			[
+				"face",
+				"face_count"
+			],
+			[
+				"ass",
+				"assureProperty"
+			],
+			[
+				"pro",
+				"prop_name"
+			],
+			[
+				"parse",
+				"parse_header"
+			],
+			[
+				"vert",
+				"vertex_count"
+			],
+			[
+				"file",
+				"file_path_"
+			],
+			[
+				"uin",
+				"uint8_t"
+			],
+			[
+				"ed",
+				"endl"
+			],
+			[
+				"pos",
+				"pos_key"
+			],
+			[
+				"un",
+				"uint32_t"
+			],
+			[
+				"r",
+				"r_res"
+			],
+			[
+				"end",
+				"endl"
+			],
+			[
+				"poin",
+				"points"
+			],
+			[
+				"poins",
+				"points"
+			],
+			[
+				"posi",
+				"positions"
+			],
+			[
+				"Vec32",
+				"Vec32ToVec8"
+			],
+			[
+				"x_",
+				"x_bits"
+			],
+			[
+				"Uin",
+				"UInt32ToVec32"
+			],
+			[
+				"y_",
+				"y_bits"
+			],
+			[
+				"y",
+				"y_bits"
+			],
+			[
+				"z",
+				"z_bits"
+			],
+			[
+				"re",
+				"return"
+			],
+			[
+				"Pon",
+				"PointCloud_"
+			],
+			[
+				"size",
+				"size"
+			],
+			[
+				"he",
+				"header_size_bytes_"
+			],
+			[
+				"Poi",
+				"PointCloud"
+			],
+			[
+				"colo",
+				"colors"
+			],
+			[
+				"num",
+				"num_points"
+			],
+			[
+				"bytes",
+				"bytes_colors"
+			],
+			[
+				"Vec",
+				"Vec8"
+			],
+			[
+				"hea",
+				"header_"
+			],
+			[
+				"head",
+				"header_size_bytes_"
+			],
+			[
+				"Recon",
+				"Reconstructor"
+			],
+			[
+				"creat",
+				"createPC"
+			],
+			[
+				"comp",
+				"comp_pc"
+			],
+			[
+				"com",
+				"comp_pc"
+			],
+			[
+				"Co",
+				"Codec"
+			],
+			[
+				"poi",
+				"points_size_bytes"
+			],
+			[
+				"siz",
+				"sizeof"
+			],
+			[
+				"po",
+				"point_cloud"
+			],
+			[
+				"Po",
+				"PointCloud_"
+			],
+			[
+				"type",
+				"typename"
+			],
+			[
+				"create",
+				"createMessage"
+			],
+			[
+				"messa",
+				"message_t"
+			],
+			[
+				"from",
+				"from_pc"
+			],
+			[
+				"to",
+				"to_pc"
+			],
+			[
+				"def",
+				"default_bounding_box"
+			],
+			[
+				"Point",
+				"PointCloud_"
+			],
+			[
+				"Poin",
+				"PointCloud_"
+			],
+			[
+				"cl",
+				"clear"
+			],
+			[
+				"vec",
+				"vector\tstd::vector"
+			],
+			[
+				"min",
+				"x_min"
+			],
+			[
+				"map",
+				"mapToRange"
+			],
+			[
+				"range",
+				"range_max"
+			],
+			[
+				"max",
+				"max_compressed"
+			],
+			[
+				"bit",
+				"bit_size"
+			],
+			[
+				"u",
+				"uint32_t"
+			],
+			[
+				"bound",
+				"bounding_box"
+			],
+			[
+				"byte",
+				"bytes_points"
+			],
+			[
+				"POINT",
+				"POINT_CLOUD_TYPE"
+			],
+			[
+				"n",
+				"nullptr"
+			],
+			[
+				"p",
+				"pc_"
+			],
+			[
+				"reconstru",
+				"reconstructPointCloud8"
+			],
+			[
+				"PC_",
+				"PC_8"
+			],
+			[
+				"PC",
+				"PC_32"
+			],
+			[
+				"mapT",
+				"mapTo32Bit"
+			],
+			[
+				"color",
+				"colors"
+			],
+			[
+				"x",
+				"x_min"
+			],
+			[
+				"y_ma",
+				"y_max"
+			],
+			[
+				"x_ma",
+				"x_max"
+			],
+			[
+				"z_max",
+				"z_max_t"
+			],
+			[
+				"z_min",
+				"z_min_t"
+			],
+			[
+				"y_min",
+				"y_min_t"
+			],
+			[
+				"x_m",
+				"x_max"
+			],
+			[
+				"header",
+				"header_size_bytes_"
+			],
+			[
+				"socket",
+				"socket_ip"
+			],
+			[
+				"fram",
+				"frame_numbers"
+			],
+			[
+				"fra",
+				"frame_numbers"
+			],
+			[
+				"init",
+				"initSocketsAndBuffers"
+			],
+			[
+				"sla",
+				"slave_frames_rgb"
+			],
+			[
+				"sen",
+				"sensor_"
+			],
+			[
+				"dept",
+				"depth_size_bytes_"
+			],
+			[
+				"cfg",
+				"cfg_d"
+			],
+			[
+				"cv",
+				"cv_names"
+			],
+			[
+				"frame",
+				"frame_size_bytes"
+			],
+			[
+				"sie",
+				"sizeof"
+			],
+			[
+				"byt",
+				"bytes_points"
+			],
+			[
+				"zmq",
+				"zmqm"
+			],
+			[
+				"zm",
+				"zmqm_end"
+			],
+			[
+				"co",
+				"cout"
+			],
+			[
+				"verbo",
+				"verbose"
+			],
+			[
+				"start",
+				"start_t"
+			],
+			[
+				"slave",
+				"slave_frames_quant_range"
+			],
+			[
+				"slavr",
+				"slave_frames_quant_range"
+			],
+			[
+				"by",
+				"bytes_recv"
+			],
+			[
+				"quan",
+				"quant_range_size"
+			],
+			[
+				"quant",
+				"quant_range_size"
+			],
+			[
+				"slav",
+				"slave_i"
+			],
+			[
+				"kin",
+				"kinect_idx"
+			],
+			[
+				"frame_d",
+				"frame_d"
+			],
+			[
+				"d_",
+				"d_8bit_frames"
+			],
+			[
+				"pu",
+				"push_back"
+			],
+			[
+				"rgb",
+				"rgb_frames"
+			],
+			[
+				"frame_siz",
+				"frame_size_bytes_comp"
+			],
+			[
+				"depth",
+				"depth_f"
+			],
+			[
+				"ma",
+				"max_d"
+			],
+			[
+				"fr",
+				"frame_d_8bit"
+			],
+			[
+				"dep",
+				"depth_f"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "framework/PlyParser.hpp",
+			"settings":
+			{
+				"buffer_size": 517,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/PlyParser.cpp",
+			"settings":
+			{
+				"buffer_size": 3531,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "source/play_pc.cpp",
+			"settings":
+			{
+				"buffer_size": 7647,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/ARTListener.hpp",
+			"settings":
+			{
+				"buffer_size": 904,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/Encoder.hpp",
+			"settings":
+			{
+				"buffer_size": 1508,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/buda8714/Documents/pcc-data/Alex-Zippering/0050.ply",
+			"settings":
+			{
+				"buffer_size": 28591840,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "source/play_ply_pc.cpp",
+			"settings":
+			{
+				"buffer_size": 3810,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "source/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 4384,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/buda8714/Documents/git/rgbd-calib",
+		"/home/buda8714/Documents/git/rgbd-calib/source"
+	],
+	"file_history":
+	[
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Reconstructor.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloud.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Encoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloudEncoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Reconstructor.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Encoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play_pc.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer_pc.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloudEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/build/ float StreamEncoder",
+		"/home/buda8714/Documents/git/rgbd-calib/build/ PointCloud_<P, C> const StreamEncoder",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/StreamEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/build/StreamEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/rgbd-calib.sublime-project",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/StreamEncoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/zmq_receiver.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/zmq_sender.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/FileBuffer.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/FileBuffer.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/external/glm-0.9.5.3/glm/detail/type_vec.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMDParser.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMDParser.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_quant.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/CMakeLists.txt",
+		"/home/buda8714/Documents/git/ww-3D-telepresence/references/Workshop_01.txt",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/udpconnection.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor.cpp",
+		"/home/buda8714/Documents/git/rgbd-recon/framework/rendering/view.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/timevalue.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_8bit.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMakeLists.txt",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/DataTypes.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/sensor.hpp"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"std::map",
+			"std:map",
+			"v_max",
+			"v_min",
+			"decompress",
+			"demapToBit",
+			"decompress",
+			"compress",
+			"PointCloudEncoder",
+			"StreamEncoder",
+			"compressToBitSize",
+			"mapToRange",
+			"PointCloud_",
+			"StreamEncoder",
+			"STREAM_ENCODER_HPP",
+			"allocateFrame",
+			");\n",
+			"decompress",
+			"0x7FF",
+			"decompress",
+			"compressToBitSize",
+			"pc_",
+			");\n",
+			"isInside",
+			"header_",
+			"mapTo32Bit",
+			"mapTo8Bit",
+			"\n}",
+			";\n",
+			"glm:",
+			"Point32",
+			"header",
+			"cvs__",
+			"sensor.",
+			"cvs",
+			"pc_",
+			"Calibrator",
+			"viewer_quant",
+			"s_num",
+			"std",
+			"play_quant",
+			");\n",
+			"vector",
+			");\n",
+			"zmq",
+			"frame_ir",
+			"slave_frames_d",
+			"RGBDSensor8Bit",
+			"8bit_depth_comp",
+			"RGBDSensor",
+			"slave_frames_d",
+			";\n",
+			"uint",
+			"unsigned",
+			"cstdint"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"max",
+			"min",
+			"mapFromBit",
+			"decompress",
+			"mapFromBit",
+			"mapToBit",
+			"Encoder",
+			"PointCloudEncoder",
+			"compress",
+			"PointCloud",
+			"Reconstructor",
+			"RECONSTRUCTOR_HPP",
+			"pc",
+			"contains",
+			"Vec32",
+			"cvs_",
+			"sensor_->",
+			"cvs_",
+			"pc",
+			"StreamEncoder",
+			"viewer_pc",
+			"k_num",
+			"play_pc",
+			"RGBDSensorQuant",
+			"quant",
+			"RGBDSensor8Bit"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "framework/PlyParser.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 517,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								341,
+								341
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "framework/PlyParser.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3531,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								417,
+								417
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 217.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "source/play_pc.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7647,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3532,
+								3532
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 1170.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 3,
+					"file": "framework/ARTListener.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 904,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								247,
+								247
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "framework/Encoder.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1508,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/home/buda8714/Documents/pcc-data/Alex-Zippering/0050.ply",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 28591840,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								232,
+								232
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "source/play_ply_pc.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3810,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1782,
+								1782
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 405.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "source/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3225,
+								3225
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 675.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 366.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "rgbd-calib",
+	"project": "rgbd-calib.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"point",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"pointc",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"pointclou",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"rgbdsensor",
+				"rgbd-calib/framework/rgbdsensor_quant.cpp"
+			],
+			[
+				"play_quant",
+				"rgbd-calib/source/play_quant.cpp"
+			],
+			[
+				"play_quan",
+				"rgbd-calib/source/play_quant.cpp"
+			],
+			[
+				"viewer",
+				"rgbd-calib/source/viewer_quant.cpp"
+			],
+			[
+				"rgbd",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"pointcl",
+				"rgbd-calib/framework/PointCloud.hpp"
+			],
+			[
+				"rgbdsesn",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"play_pc",
+				"rgbd-calib/source/play_pc.cpp"
+			],
+			[
+				"viewer.cpp",
+				"rgbd-calib/source/viewer.cpp"
+			],
+			[
+				"work",
+				"ww-3D-telepresence/references/Workshop_01.txt"
+			],
+			[
+				"rdbdsens",
+				"rgbd-calib/framework/rgbdsensor_quant.hpp"
+			],
+			[
+				"",
+				"rgbd-calib/source/play_quant.cpp"
+			],
+			[
+				"works",
+				"ww-3D-telepresence/references/Workshop_01.txt"
+			],
+			[
+				"rgbdsens",
+				"rgbd-calib/framework/rgbdsensor.cpp"
+			],
+			[
+				"view",
+				"rgbd-recon/framework/rendering/view.cpp"
+			],
+			[
+				"play.cpp",
+				"rgbd-calib/source/play.cpp"
+			],
+			[
+				"play",
+				"rgbd-calib/source/play.cpp"
+			],
+			[
+				"rgbdsensor.",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"file",
+				"rgbd-calib/framework/FileBuffer.cpp"
+			],
+			[
+				"rg",
+				"rgbd-calib/framework/rgbdsensor.cpp"
+			],
+			[
+				"viewer_8bit",
+				"rgbd-calib/source/viewer_8bit_depth_comp.cpp"
+			],
+			[
+				"play_8b",
+				"rgbd-calib/source/play_8bit_depth_comp.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 1,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 277.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
