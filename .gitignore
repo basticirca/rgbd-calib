@@ -20,6 +20,9 @@
 *.out
 *.app
 
+# Sublime project
+*.sublime-project
+
 build
 cmake_out
 install

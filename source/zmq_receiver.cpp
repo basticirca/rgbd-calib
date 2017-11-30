@@ -5,6 +5,7 @@
 #include <zmq.hpp>
 
 #include <iostream>
+#include <vector>
 
 
 int main(int argc, char* argv[]){
@@ -28,17 +29,32 @@ int main(int argc, char* argv[]){
   std::string endpoint("tcp://" + socket_name);
   socket.connect(endpoint.c_str());
 
+  std::vector<glm::vec3> points;
+  unsigned num_header_fields = 1;
+  unsigned* header = new unsigned[num_header_fields];  
+  
+  const unsigned bytes_header(num_header_fields * sizeof(unsigned));
+  unsigned num_points;
+
+  unsigned offset = 0;
   while(true){
 
-
-
-    zmq::message_t zmqm(sizeof(glm::mat4));
+    //zmq::message_t zmqm(sizeof(glm::vec3));
+    zmq::message_t zmqm;
     socket.recv(&zmqm);
 
-    glm::mat4 pose;
-    memcpy( glm::value_ptr(pose), (const unsigned char* ) zmqm.data(), sizeof(glm::mat4));
+    if(zmqm.size() < bytes_header)
+      continue;
+
+    offset = 0;
+    memcpy( (unsigned char*) header, (const unsigned char* ) zmqm.data() + offset, bytes_header);
+    offset += bytes_header;
+    num_points = header[0];
+    points.clear();
+    points.resize(num_points);
+    memcpy( (unsigned char*) points.data(), (const unsigned char* ) zmqm.data() + offset, num_points*sizeof(glm::vec3));
     
-    std::cout << "received: " << pose << std::endl;
+    std::cout << "received: " << points.size() << " points" << std::endl;
 
   }
 

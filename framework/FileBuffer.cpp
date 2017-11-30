@@ -27,7 +27,7 @@ The default streams stdin and stdout are fully buffered by default if they are k
 
 A call to this function is equivalent to calling setvbuf with _IOFBF as mode and BUFSIZ as size (when buffer is not a null pointer), or equivalent to calling it with _IONBF as mode (when it is a null pointer).
 */
-	
+  
   FileBuffer::FileBuffer(const char* path)
     : m_path(path),
       m_file(0),
@@ -50,7 +50,7 @@ A call to this function is equivalent to calling setvbuf with _IOFBF as mode and
   FileBuffer::isOpen(){
     return m_file != 0;
   }
-	
+  
   bool
   FileBuffer::open(const char* mode, size_t buffersize){
 
@@ -120,12 +120,12 @@ A call to this function is equivalent to calling setvbuf with _IOFBF as mode and
 
     if((m_bytes_r + numbytes) > m_fstat.st_size){
       if(m_looping){
-	std::cerr << "FileBuffer " << this << " rewinding " << m_path << " filesize is " << m_fstat.st_size << std::endl;
-	rewind(m_file);
-	m_bytes_r = 0;
+        std::cerr << "FileBuffer " << this << " rewinding " << m_path << " filesize is " << m_fstat.st_size << std::endl;
+        rewind(m_file);
+        m_bytes_r = 0;
       }
       else{
-	return 0;
+        return 0;
       }
     }
 

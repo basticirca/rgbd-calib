@@ -1,9 +1,14 @@
 #include <CMDParser.hpp>
 #include <FileBuffer.hpp>
-
+#include <calibvolume.hpp>
+#include <rgbdsensor.hpp>
 #include <timevalue.hpp>
 #include <clock.hpp>
 #include <zmq.hpp>
+#include <math.h>
+#include <PointCloudEncoder.hpp>
+#include <Reconstructor.hpp>
+#include <PointCloud.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -26,28 +31,27 @@ int main(int argc, char* argv[]){
   int num_loops = 0;
   bool perform_loop = false;
   bool swing = false;
-  unsigned num_kinect_cameras = 1;
   bool rgb_is_compressed = false;
   float max_fps = 20.0;
   std::string socket_ip = "127.0.0.01";
   unsigned base_socket_port = 7000;
+  float min_d = 30.0f;
+  float max_d = 286.0f;
   bool verbose = false;
+  BoundingBox bb(-1.0f, 1.0f, 0.0f, 2.0f, -1.0f, 1.0f);
   CMDParser p("play_this_filename ...");
-  p.addOpt("k",1,"num_kinect_cameras", "specify how many kinect cameras are in stream, default: 1");
   p.addOpt("f",1,"max_fps", "specify how fast in fps the stream should be played, default: 20.0");
   p.addOpt("c",-1,"rgb_is_compressed", "enable compressed recording for rgb stream, default: false");
-
   p.addOpt("s",1,"socket_ip", "specify ip address of socket for sending, default: " + socket_ip);
   p.addOpt("p",1,"socket_port", "specify port of socket for sending, default: " + toString(base_socket_port));
   p.addOpt("l",2,"loop", "specify a start and end frame for looping, default: " + toString(start_loop) + " " + toString(end_loop));
   p.addOpt("w",-1,"swing", "enable swing looping mode, default: false");
   p.addOpt("n",1,"num_loops", "loop n time, default: loop forever");
+  p.addOpt("r",2,"quant_range", "specify min depth and max depth value for quantization range, default (min_d max_d): 30.0 286.0");
   p.addOpt("v",-1,"verbose", "enable output verbosity, default: false");
+  p.addOpt("b",6,"bounding_box", "specifies the reconstruction bounding box, default (x_min x_max y_min y_max z_min z_max): -1 1 0 2 -1 1 ");
   p.init(argc,argv);
 
-  if(p.isOptSet("k")){
-    num_kinect_cameras = p.getOptsInt("k")[0];
-  }
   if(p.isOptSet("f")){
     max_fps = p.getOptsFloat("f")[0];
   }
@@ -82,19 +86,52 @@ int main(int argc, char* argv[]){
     num_loops = p.getOptsInt("n")[0];
   }
 
+  if(p.isOptSet("r")){
+    min_d = p.getOptsFloat("r")[0];
+    max_d = p.getOptsFloat("r")[1];
+    if(min_d > max_d){
+      std::cerr << "ERROR: -r option must define min_d < max_d!" << std::endl;
+      p.showHelp();
+    }
+  }
+
   if(p.isOptSet("v")){
     verbose = true;
   }
 
+  if(p.isOptSet("b")) {
+    bb.x_min = p.getOptsFloat("b")[0];
+    bb.x_max = p.getOptsFloat("b")[1];
+    bb.y_min = p.getOptsFloat("b")[2];
+    bb.y_max = p.getOptsFloat("b")[3];
+    bb.z_min = p.getOptsFloat("b")[4];
+    bb.z_max = p.getOptsFloat("b")[5];
+  }
+
+  const unsigned num_kinect_cameras(p.getArgs().size() - 1);
+  
+  RGBDConfig cfg;
+  cfg.size_rgb = glm::uvec2(1280, 1080);
+  cfg.size_d   = glm::uvec2(512, 424);
+  
+  std::vector<std::string> cv_names;
+  for(unsigned i = 0; i < num_kinect_cameras; ++i){
+    cv_names.push_back(p.getArgs()[i]);
+  }
+
   unsigned min_frame_time_ns = 1000000000/max_fps;
 
-  const unsigned colorsize = rgb_is_compressed ? 691200 : 1280 * 1080 * 3;
-  const unsigned depthsize = 512 * 424 * sizeof(float);
-  const size_t frame_size_bytes((colorsize + depthsize) * num_kinect_cameras);
+  const unsigned bytes_rgb = rgb_is_compressed ? 691200 : 1280 * 1080 * 3;
+  const unsigned bytes_d = 512 * 424 * sizeof(float);
+  const size_t frame_size_bytes((bytes_rgb + bytes_d) * num_kinect_cameras);
+  
+  Reconstructor reconstructor(cfg, cv_names);
+  reconstructor.default_bounding_box = bb;
+  PointCloudEncoder encoder;
 
   zmq::context_t ctx(1); // means single threaded
 
-  const unsigned num_streams = p.getArgs().size();
+  const unsigned num_streams = 1;
 
   std::cout << "going to stream " << num_streams << " to socket ip " << socket_ip << " starting at port number " << base_socket_port << std::endl;
 
@@ -102,7 +139,7 @@ int main(int argc, char* argv[]){
   std::vector<zmq::socket_t* > sockets;
   std::vector<int> frame_numbers;
   for(unsigned s_num = 0; s_num < num_streams; ++s_num){
-    FileBuffer* fb = new FileBuffer(p.getArgs()[s_num].c_str());
+    FileBuffer* fb = new FileBuffer(p.getArgs()[p.getArgs().size()-1].c_str());
     if(!fb->open("r")){
       std::cerr << "error opening " << p.getArgs()[s_num] << " exiting..." << std::endl;
       return 1;
@@ -128,7 +165,6 @@ int main(int argc, char* argv[]){
     sockets.push_back(socket);
   }
 
-  
   bool fwd = true;
   int loop_num = 1;
   sensor::timevalue ts(sensor::clock::time());
@@ -139,7 +175,7 @@ int main(int argc, char* argv[]){
     }
     
     sensor::timevalue start_t(sensor::clock::time());
-    
+      
     for(unsigned s_num = 0; s_num < num_streams; ++s_num){
 
       if(perform_loop){
@@ -167,21 +203,28 @@ int main(int argc, char* argv[]){
             }
           }
         }
-        std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
+        //std::cout << "s_num: " << s_num << " -> frame_number: " << frame_numbers[s_num] << std::endl;
         fbs[s_num]->gotoByte(frame_size_bytes * frame_numbers[s_num]);
       }
 
-      zmq::message_t zmqm(frame_size_bytes);
-      fbs[s_num]->read((unsigned char*) zmqm.data(), frame_size_bytes);
-      // send frames
-      sockets[s_num]->send(zmqm);
+      // read updated FileBuffer into encoder frame
+      fbs[s_num]->read(reconstructor.frame, frame_size_bytes);
+      
+      reconstructor.reconstructPointCloud();
+
+      if(verbose) {
+        std::cout << "Sending " << reconstructor.pc->size() << " points.\n";
+      }
+
+      // send point cloud
+      zmq::message_t msg = encoder.encode(reconstructor.pc, PointCloudEncoder::PC_1x32p_1x32c);
+      sockets[s_num]->send(msg);
     }
 
     sensor::timevalue end_t(sensor::clock::time());
     if(verbose) {
-      std::cout << "Sending took " << (end_t - start_t).msec() << "ms.\n";
+      std::cout << "Reconstruction and sending took " << (end_t - start_t).msec() << "ms.\n";
     }
-
     // check if fps is correct
     sensor::timevalue ts_now = sensor::clock::time();
     long long time_spent_ns = (ts_now - ts).nsec();
@@ -191,9 +234,6 @@ int main(int argc, char* argv[]){
       sensor::timevalue rest_sleep(0,rest_sleep_ns);
       nanosleep(rest_sleep);
     }
-
-
-
   }
 
   // cleanup

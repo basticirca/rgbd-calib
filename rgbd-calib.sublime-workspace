@@ -1,0 +1,1323 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"boundi",
+				"bounding_box"
+			],
+			[
+				"num",
+				"num_frames"
+			],
+			[
+				"par",
+				"parsers_"
+			],
+			[
+				"new",
+				"new_pair"
+			],
+			[
+				"Ply",
+				"PlyParser"
+			],
+			[
+				"end",
+				"end"
+			],
+			[
+				"p",
+				"parsers_"
+			],
+			[
+				"e",
+				"end_fram"
+			],
+			[
+				"file",
+				"file_paths_"
+			],
+			[
+				"for",
+				"format"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"boudning",
+				"bounding_box"
+			],
+			[
+				"tt",
+				"total_out_of_bounds"
+			],
+			[
+				"tot",
+				"total_out_of_bounds"
+			],
+			[
+				"bou",
+				"bounds"
+			],
+			[
+				"to",
+				"total_out_of_bounds"
+			],
+			[
+				"prin",
+				"print_current"
+			],
+			[
+				"print",
+				"print_current"
+			],
+			[
+				"do",
+				"do_print"
+			],
+			[
+				"point",
+				"point_cloud"
+			],
+			[
+				"boudnin",
+				"bounding_box"
+			],
+			[
+				"poin",
+				"point_cloud"
+			],
+			[
+				"pos",
+				"position_xyz"
+			],
+			[
+				"ply",
+				"ply_parser"
+			],
+			[
+				"ve",
+				"verbose"
+			],
+			[
+				"prop",
+				"prop_name"
+			],
+			[
+				"temp",
+				"temp_bool"
+			],
+			[
+				"v",
+				"v_idx"
+			],
+			[
+				"vertex",
+				"vertex_count"
+			],
+			[
+				"face",
+				"face_count"
+			],
+			[
+				"ass",
+				"assureProperty"
+			],
+			[
+				"pro",
+				"prop_name"
+			],
+			[
+				"parse",
+				"parse_header"
+			],
+			[
+				"vert",
+				"vertex_count"
+			],
+			[
+				"uin",
+				"uint8_t"
+			],
+			[
+				"ed",
+				"endl"
+			],
+			[
+				"un",
+				"uint32_t"
+			],
+			[
+				"r",
+				"r_res"
+			],
+			[
+				"poins",
+				"points"
+			],
+			[
+				"posi",
+				"positions"
+			],
+			[
+				"Vec32",
+				"Vec32ToVec8"
+			],
+			[
+				"x_",
+				"x_bits"
+			],
+			[
+				"Uin",
+				"UInt32ToVec32"
+			],
+			[
+				"y_",
+				"y_bits"
+			],
+			[
+				"y",
+				"y_bits"
+			],
+			[
+				"z",
+				"z_bits"
+			],
+			[
+				"re",
+				"return"
+			],
+			[
+				"Pon",
+				"PointCloud_"
+			],
+			[
+				"size",
+				"size"
+			],
+			[
+				"he",
+				"header_size_bytes_"
+			],
+			[
+				"Poi",
+				"PointCloud"
+			],
+			[
+				"colo",
+				"colors"
+			],
+			[
+				"bytes",
+				"bytes_colors"
+			],
+			[
+				"Vec",
+				"Vec8"
+			],
+			[
+				"hea",
+				"header_"
+			],
+			[
+				"head",
+				"header_size_bytes_"
+			],
+			[
+				"Recon",
+				"Reconstructor"
+			],
+			[
+				"creat",
+				"createPC"
+			],
+			[
+				"comp",
+				"comp_pc"
+			],
+			[
+				"com",
+				"comp_pc"
+			],
+			[
+				"Co",
+				"Codec"
+			],
+			[
+				"poi",
+				"points_size_bytes"
+			],
+			[
+				"siz",
+				"sizeof"
+			],
+			[
+				"po",
+				"point_cloud"
+			],
+			[
+				"Po",
+				"PointCloud_"
+			],
+			[
+				"type",
+				"typename"
+			],
+			[
+				"create",
+				"createMessage"
+			],
+			[
+				"messa",
+				"message_t"
+			],
+			[
+				"from",
+				"from_pc"
+			],
+			[
+				"def",
+				"default_bounding_box"
+			],
+			[
+				"Point",
+				"PointCloud_"
+			],
+			[
+				"Poin",
+				"PointCloud_"
+			],
+			[
+				"cl",
+				"clear"
+			],
+			[
+				"vec",
+				"vector\tstd::vector"
+			],
+			[
+				"min",
+				"x_min"
+			],
+			[
+				"map",
+				"mapToRange"
+			],
+			[
+				"range",
+				"range_max"
+			],
+			[
+				"max",
+				"max_compressed"
+			],
+			[
+				"bit",
+				"bit_size"
+			],
+			[
+				"u",
+				"uint32_t"
+			],
+			[
+				"bound",
+				"bounding_box"
+			],
+			[
+				"byte",
+				"bytes_points"
+			],
+			[
+				"POINT",
+				"POINT_CLOUD_TYPE"
+			],
+			[
+				"n",
+				"nullptr"
+			],
+			[
+				"reconstru",
+				"reconstructPointCloud8"
+			],
+			[
+				"PC_",
+				"PC_8"
+			],
+			[
+				"PC",
+				"PC_32"
+			],
+			[
+				"mapT",
+				"mapTo32Bit"
+			],
+			[
+				"color",
+				"colors"
+			],
+			[
+				"x",
+				"x_min"
+			],
+			[
+				"y_ma",
+				"y_max"
+			],
+			[
+				"x_ma",
+				"x_max"
+			],
+			[
+				"z_max",
+				"z_max_t"
+			],
+			[
+				"z_min",
+				"z_min_t"
+			],
+			[
+				"y_min",
+				"y_min_t"
+			],
+			[
+				"x_m",
+				"x_max"
+			],
+			[
+				"header",
+				"header_size_bytes_"
+			],
+			[
+				"socket",
+				"socket_ip"
+			],
+			[
+				"fram",
+				"frame_numbers"
+			],
+			[
+				"fra",
+				"frame_numbers"
+			],
+			[
+				"init",
+				"initSocketsAndBuffers"
+			],
+			[
+				"sla",
+				"slave_frames_rgb"
+			],
+			[
+				"sen",
+				"sensor_"
+			],
+			[
+				"dept",
+				"depth_size_bytes_"
+			],
+			[
+				"cfg",
+				"cfg_d"
+			],
+			[
+				"cv",
+				"cv_names"
+			],
+			[
+				"frame",
+				"frame_size_bytes"
+			],
+			[
+				"sie",
+				"sizeof"
+			],
+			[
+				"byt",
+				"bytes_points"
+			],
+			[
+				"zmq",
+				"zmqm"
+			],
+			[
+				"zm",
+				"zmqm_end"
+			],
+			[
+				"co",
+				"cout"
+			],
+			[
+				"verbo",
+				"verbose"
+			],
+			[
+				"start",
+				"start_t"
+			],
+			[
+				"slave",
+				"slave_frames_quant_range"
+			],
+			[
+				"slavr",
+				"slave_frames_quant_range"
+			],
+			[
+				"by",
+				"bytes_recv"
+			],
+			[
+				"quan",
+				"quant_range_size"
+			],
+			[
+				"quant",
+				"quant_range_size"
+			],
+			[
+				"slav",
+				"slave_i"
+			],
+			[
+				"kin",
+				"kinect_idx"
+			],
+			[
+				"frame_d",
+				"frame_d"
+			],
+			[
+				"d_",
+				"d_8bit_frames"
+			],
+			[
+				"pu",
+				"push_back"
+			],
+			[
+				"rgb",
+				"rgb_frames"
+			],
+			[
+				"frame_siz",
+				"frame_size_bytes_comp"
+			],
+			[
+				"depth",
+				"depth_f"
+			],
+			[
+				"ma",
+				"max_d"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/home/buda8714/Documents/git/ww-3D-telepresence/references/Workshop_01.txt",
+			"settings":
+			{
+				"buffer_size": 7634,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/buda8714/Documents/git/ww-3D-telepresence/point_cloud_people_todo.txt",
+			"settings":
+			{
+				"buffer_size": 967,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "### HIGH PRIORITY ###"
+			}
+		},
+		{
+			"file": "framework/PointCloudEncoder.cpp",
+			"settings":
+			{
+				"buffer_size": 8795,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "source/play_pc.cpp",
+			"settings":
+			{
+				"buffer_size": 7647,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/Reconstructor.hpp",
+			"settings":
+			{
+				"buffer_size": 1051,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/PointCloud.hpp",
+			"settings":
+			{
+				"buffer_size": 2683,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/Reconstructor.cpp",
+			"settings":
+			{
+				"buffer_size": 3525,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework/PointCloudEncoder.hpp",
+			"settings":
+			{
+				"buffer_size": 2280,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/guacamole/master/plugins/guacamole-spoints/src/gua/spoints/spoints_geometry/NetKinectArray.cpp",
+			"settings":
+			{
+				"buffer_size": 5860,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/buda8714/Documents/git/rgbd-calib",
+		"/home/buda8714/Documents/git/rgbd-calib/framework",
+		"/home/buda8714/Documents/git/rgbd-calib/source"
+	],
+	"file_history":
+	[
+		"/home/buda8714/Documents/pcc-data/Alex-Zippering/0050.ply",
+		"/opt/guacamole/master/plugins/guacamole-spoints/src/gua/spoints/spoints_geometry/NetKinectArray.cpp",
+		"/opt/pcc-mp3dg/cloud_codec_v2/src/point_cloud_codec_v2.cpp",
+		"/opt/pcc-mp3dg/cloud_codec_v2/include/pcl/cloud_codec_v2/point_cloud_codec_v2.h",
+		"/opt/pcc-mp3dg/cloud_codec_v2/include/pcl/cloud_codec_v2/point_coding_v2.h",
+		"/home/buda8714/Documents/git/rgbd-calib/source/CMakeLists.txt",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/ARTListener.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play_ply_pc.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloud.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Encoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloudEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play_pc.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PlyParser.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PlyFrameBuffer.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PlyFrameBuffer.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PlyParser.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Reconstructor.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Encoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/PointCloudEncoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/Reconstructor.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer_pc.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/build/ float StreamEncoder",
+		"/home/buda8714/Documents/git/rgbd-calib/build/ PointCloud_<P, C> const StreamEncoder",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/StreamEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/build/StreamEncoder.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/rgbd-calib.sublime-project",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/StreamEncoder.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/zmq_receiver.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/zmq_sender.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/FileBuffer.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/FileBuffer.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer_quant.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/external/glm-0.9.5.3/glm/detail/type_vec.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMDParser.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMDParser.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/source/viewer.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_quant.hpp",
+		"/home/buda8714/Documents/git/ww-3D-telepresence/references/Workshop_01.txt",
+		"/home/buda8714/Documents/git/rgbd-calib/source/play.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/udpconnection.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor.cpp",
+		"/home/buda8714/Documents/git/rgbd-recon/framework/rendering/view.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/timevalue.cpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/rgbdsensor_8bit.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/CMakeLists.txt",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/DataTypes.hpp",
+		"/home/buda8714/Documents/git/rgbd-calib/framework/sensor.hpp"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"std::map<int",
+			"PlyParser",
+			"PLY_PARSER_HPP",
+			"Skipped",
+			"Skippend",
+			"compressed",
+			"bool",
+			"std::map",
+			"std:map",
+			"v_max",
+			"v_min",
+			"decompress",
+			"demapToBit",
+			"decompress",
+			"compress",
+			"PointCloudEncoder",
+			"StreamEncoder",
+			"compressToBitSize",
+			"mapToRange",
+			"PointCloud_",
+			"StreamEncoder",
+			"STREAM_ENCODER_HPP",
+			"allocateFrame",
+			");\n",
+			"decompress",
+			"0x7FF",
+			"decompress",
+			"compressToBitSize",
+			"pc_",
+			");\n",
+			"isInside",
+			"header_",
+			"mapTo32Bit",
+			"mapTo8Bit",
+			"\n}",
+			";\n",
+			"glm:",
+			"Point32",
+			"header",
+			"cvs__",
+			"sensor.",
+			"cvs",
+			"pc_",
+			"Calibrator",
+			"viewer_quant",
+			"s_num",
+			"std",
+			"play_quant",
+			");\n",
+			"vector",
+			");\n",
+			"zmq",
+			"frame_ir",
+			"slave_frames_d",
+			"RGBDSensor8Bit",
+			"8bit_depth_comp",
+			"RGBDSensor",
+			"slave_frames_d",
+			";\n",
+			"uint",
+			"unsigned",
+			"cstdint"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"std::map<unsigned",
+			"PlyFrameBuffer",
+			"PLY_FRAME_BUFFER",
+			"max",
+			"min",
+			"mapFromBit",
+			"decompress",
+			"mapFromBit",
+			"mapToBit",
+			"Encoder",
+			"PointCloudEncoder",
+			"compress",
+			"PointCloud",
+			"Reconstructor",
+			"RECONSTRUCTOR_HPP",
+			"pc",
+			"contains",
+			"Vec32",
+			"cvs_",
+			"sensor_->",
+			"cvs_",
+			"pc",
+			"StreamEncoder",
+			"viewer_pc",
+			"k_num",
+			"play_pc",
+			"RGBDSensorQuant",
+			"quant",
+			"RGBDSensor8Bit"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/home/buda8714/Documents/git/ww-3D-telepresence/references/Workshop_01.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7634,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3000,
+								3000
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 962.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/buda8714/Documents/git/ww-3D-telepresence/point_cloud_people_todo.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 967,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								123,
+								123
+							]
+						],
+						"settings":
+						{
+							"auto_name": "### HIGH PRIORITY ###",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "framework/PointCloudEncoder.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8795,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2394,
+								2394
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1584.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "source/play_pc.cpp",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 7647,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2656,
+								2656
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 2.0,
+						"translation.y": 3861.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "framework/Reconstructor.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1051,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								612,
+								612
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "framework/PointCloud.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2683,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2220,
+								2220
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3168.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "framework/Reconstructor.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3525,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2033,
+								2033
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1386.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "framework/PointCloudEncoder.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2280,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								513,
+								513
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/opt/guacamole/master/plugins/guacamole-spoints/src/gua/spoints/spoints_geometry/NetKinectArray.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5860,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3054,
+								3054
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3069.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "framework/PointCloudEncoder.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8795,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7550,
+								7550
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6445.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 366.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "rgbd-calib",
+	"project": "rgbd-calib.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pointcloud",
+				"framework/PointCloudEncoder.cpp"
+			],
+			[
+				"pointclouden",
+				"framework/PointCloudEncoder.hpp"
+			],
+			[
+				"pointclou",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"reconstr",
+				"framework/Reconstructor.cpp"
+			],
+			[
+				"reconstructor",
+				"framework/Reconstructor.hpp"
+			],
+			[
+				"plyfram",
+				"framework/PlyFrameBuffer.cpp"
+			],
+			[
+				"",
+				"framework/PlyParser.hpp"
+			],
+			[
+				"ply",
+				"framework/PlyFrameBuffer.hpp"
+			],
+			[
+				"pointcl",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"point",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"pointc",
+				"framework/PointCloud.hpp"
+			],
+			[
+				"rgbdsensor",
+				"rgbd-calib/framework/rgbdsensor_quant.cpp"
+			],
+			[
+				"play_quant",
+				"rgbd-calib/source/play_quant.cpp"
+			],
+			[
+				"play_quan",
+				"rgbd-calib/source/play_quant.cpp"
+			],
+			[
+				"viewer",
+				"rgbd-calib/source/viewer_quant.cpp"
+			],
+			[
+				"rgbd",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"rgbdsesn",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"play_pc",
+				"rgbd-calib/source/play_pc.cpp"
+			],
+			[
+				"viewer.cpp",
+				"rgbd-calib/source/viewer.cpp"
+			],
+			[
+				"work",
+				"ww-3D-telepresence/references/Workshop_01.txt"
+			],
+			[
+				"rdbdsens",
+				"rgbd-calib/framework/rgbdsensor_quant.hpp"
+			],
+			[
+				"works",
+				"ww-3D-telepresence/references/Workshop_01.txt"
+			],
+			[
+				"rgbdsens",
+				"rgbd-calib/framework/rgbdsensor.cpp"
+			],
+			[
+				"view",
+				"rgbd-recon/framework/rendering/view.cpp"
+			],
+			[
+				"play.cpp",
+				"rgbd-calib/source/play.cpp"
+			],
+			[
+				"play",
+				"rgbd-calib/source/play.cpp"
+			],
+			[
+				"rgbdsensor.",
+				"rgbd-calib/framework/rgbdsensor.hpp"
+			],
+			[
+				"file",
+				"rgbd-calib/framework/FileBuffer.cpp"
+			],
+			[
+				"rg",
+				"rgbd-calib/framework/rgbdsensor.cpp"
+			],
+			[
+				"viewer_8bit",
+				"rgbd-calib/source/viewer_8bit_depth_comp.cpp"
+			],
+			[
+				"play_8b",
+				"rgbd-calib/source/play_8bit_depth_comp.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 277.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
