@@ -14,6 +14,7 @@
 namespace sensor{
   class sensor;
   class device;
+  
 }
 
 
